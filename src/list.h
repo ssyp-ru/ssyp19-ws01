@@ -6,19 +6,19 @@
 #include "cli.h"
 #include "string_t.h"
 
-struct flag;
+struct argument;
 
-// Review: flag_list_t
-typedef struct node {
-    struct flag *value;
-    struct node *prev, *next;
-  } node_t;
+//! Review: flag_list_t
+typedef struct flag_list {
+    struct argument *value;
+    struct flag_list *prev, *next;
+  } flag_list_t;
 
-node_t *flag_node_insert(node_t *head, struct flag *value, node_t *pos);
+flag_list_t *flag_list_insert(flag_list_t *head, struct argument *value, flag_list_t *pos);
 
-node_t *flag_node_find(node_t *head, struct flag *value);
+flag_list_t *flag_list_find(flag_list_t *head, struct argument *value);
 
-node_t *flag_node_erase(node_t *head, node_t *node);
+flag_list_t *flag_list_erase(flag_list_t *head, flag_list_t *node);
 
-void flag_node_destroy(node_t *node);
+void flag_list_destroy(flag_list_t *node);
 #endif
