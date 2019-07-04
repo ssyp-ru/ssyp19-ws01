@@ -1,4 +1,4 @@
-# 1 
+# 1 fs helpers
 Написать модуль с хелперами для файловых операций. Необходимый (возможно не достаточный) список:
 ```c
 int copy(const char* from, const char* to);
@@ -10,7 +10,7 @@ int is_directory(const char* path);
 void get_gg_root_dir_path(char buffer[MAX_PATH_LENGHT]);
 ```
 
-# 2
+# 2 CLI module
 Написать модуль CLI. Должно это выглядеть примерно так (с клиентской стороны):
 ```c
 enum Commands {
@@ -41,7 +41,7 @@ switch (cli_module->command_type) {
 # 2.1
 Сделать вывод --help
 
-# (Done) 3
+# (Done) 3 integration test module
 Модуль тестирования. Нужно научится запускать программы, запихивать туда stdin и принwrite-treeимать его stdout. Сравнивать с ожидаемым.
 ```c
 test_bin_t * test_case = create_test_case("programm_name");
@@ -52,71 +52,68 @@ test_case->expect_code(0);
 test_case->expect_stdout("")
 ```
 
-# 4
-ini file parser
+# 4 ini file parser
+файл такого формата (см. .gitconfig для примера):
+```
+[section_name]
+var_name = var_value
+```
+нужен примерно такой интерфейс
+```c
+ini_storage_t * ini_storage = ini_parse(filepath);
+char buf[100];
+ini_get_value(section_name, var_name, buf); // section_name may be ""
+ini_set_value(section_name, var_name, value);
+```
 
-# 5
-gitignore
 
-# 6
-rev-parse, rev-update
+# 5 gitignore
+нужно сделать функцию, которая принимает путь и возвращает 1 если он соответствует gitignore
 
-#6.1
-rev-list
+# 6 rev-parse, rev-update
+функции, которые возвращают и записывают rev
 
-#6.2
-HEAD~2 syntax
+#6.1 rev-list
 
-# 7
-filelock
+#6.2 HEAD~2 syntax
 
-# 8
-hash-object, sha lib interration, cat-file
+# 7 filelock
 
-# 9
-update-index, ls-files, write-tree
+# 8 hash-object, sha lib interration, cat-file
+флаги для:
+hash-object: -w --stdin, [filename]
+cat-file: -p -t
 
-# 10
-commit-tree
+# 9 update-index, ls-files, write-tree
 
-# 11
-read env vars
+# 10 commit-tree
 
-# 12
-add, commit
+# 11 read env vars
+нужно уметь читать переменные окружения (через отдельный модуль?)
 
-# 13
-simple log
+# 12 add, commit
 
-# 14
-text diff
+# 13 simple log
 
-# 15
-commit diff
+# 14 text diff
 
-# 16
-merge fast-forward
+# 15 commit diff
 
-# 17
-automerge
+# 16 merge fast-forward
 
-# 18
-GC
+# 17 automerge
 
-# 19
-log flags
+# 18 GC
 
-# 20
-cherry-pick
+# 19 log flags
 
-# 21
-commit --amend
+# 20 cherry-pick
 
-# 22
-config
+# 21 commit --amend
 
-# (Done) 23
-string_t
+# 22 config
+
+# (Done) 23 string_t
 
 основные str функции + 
 
@@ -125,11 +122,9 @@ void read_str_from_file(string_t * s, const char* path);
 void write_str_to_file(string_t * s, const char* path);
 ```
 
-# 24
-make patch, apply patch
+# 24 make patch, apply patch
 
-# 25
-sha1 helper function
+# 25 sha1 helper function
 ```c
 void calc_sha_str(char hash[SHA_LENGHT], const char* data, int len);
 void calc_sha_file(char hash[SHA_LENGHT], const char* path_to_file);
