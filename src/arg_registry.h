@@ -8,6 +8,7 @@ enum Commands {
     CAT_FILE,
     HASH_OBJ,
     COMMIT_TREE,
+    CHECKOUT,
     COUNT
 };
 

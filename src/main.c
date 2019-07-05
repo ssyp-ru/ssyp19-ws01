@@ -2,6 +2,8 @@
 #include "list.h"
 #include "index.h"
 #include "commit-tree.h"
+#include "checkout.h"
+
 
 int main(int argc, char *argv[]){
     cli_module_t *cli_module = cli_create();
@@ -35,9 +37,12 @@ int main(int argc, char *argv[]){
             hash_object(cli_get_argument(cli_module, "filepath"));
             break;
         }
+        case CHECKOUT: {
+            checkout(cli_get_argument(cli_module, "sha"));
+            break;
+        }
         default: {
             fprintf(stderr, "ERROR: unknown command type");
-        }
     }
     return 0;
 }
