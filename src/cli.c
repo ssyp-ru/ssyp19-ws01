@@ -62,15 +62,13 @@ argument_t *find_pos_arg(command_t *command, int pos){
 }
 
 
-void cli_parse(cli_module_t *cli_module, int argc, char **argv){
+int cli_parse(cli_module_t *cli_module, int argc, char **argv){
     if (argc < 2) {
-        fprintf(stderr, "You don't enter command\n");
-        return;
+        return 0 ;
     }
     int num_command = cli_get_command(cli_module, argv[1]);
     if(!(num_command + 1)){
-        fprintf(stderr, "This command not register\n");
-        return;
+        return 0;
     }
     cli_module->num_command = num_command;
     int pos_arg = 1;
@@ -87,7 +85,7 @@ void cli_parse(cli_module_t *cli_module, int argc, char **argv){
         if (dash_index != 0) {
             if (was_flag == 2) {
                 fprintf(stderr, "Was expected flag value, get %s\n", argv[ind]);
-                exit(1);
+                return 0;
             }
             ssyp_string_initialize_with_string(&name_flag, &argv[ind][dash_index]);
             was_flag = 1;
@@ -108,7 +106,7 @@ void cli_parse(cli_module_t *cli_module, int argc, char **argv){
         }
         if (!arg_desc){
             fprintf(stderr, "This flag or argument not found\n");
-            exit(1);
+            return 0;
         }
 
         if (arg_desc->pos != -1) {
@@ -123,6 +121,7 @@ void cli_parse(cli_module_t *cli_module, int argc, char **argv){
             was_flag = 2;
         }
     }
+    return 1;
 }
 
 argument_t *flag_initialize(){
@@ -143,7 +142,10 @@ void add_positional_argument(cli_module_t *cli_module,
         printf("Command not found");
         return;
     }
-    //?? Review: what the point in this variables?
+    if (find_pos_arg(cli_module->command_list[num_command], pos)){
+        printf("This possition used");
+        return;
+    }
     string_t s_name;
     string_t help;
 
