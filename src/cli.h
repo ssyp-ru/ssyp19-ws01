@@ -56,6 +56,7 @@ void register_command(cli_module_t *cli_module, enum Commands num_command, char 
 
 cli_module_t *cli_create();
 
+void cli_destroy(cli_module_t *cli_module);
 //cli_desroy(cli_module_t *cli_module);
 //! Review: cli_destroy?
 #endif

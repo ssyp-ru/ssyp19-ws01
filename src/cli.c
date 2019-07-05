@@ -4,7 +4,6 @@
 #include "cli.h"
 #include "list.h"
 #include "string_t.h"
-#include <string.h>
 
 // Review:
 // So...
@@ -98,7 +97,6 @@ int cli_parse(cli_module_t *cli_module, int argc, char **argv){
         }
         if (dash_index != 0) {
             if (was_flag == 2) {
-                fprintf(stderr, "Was expected flag value, get %s\n", argv[ind]);
                 return 0;
             }
             ssyp_string_initialize_with_string(&name_flag, &argv[ind][dash_index]);
@@ -119,7 +117,6 @@ int cli_parse(cli_module_t *cli_module, int argc, char **argv){
             arg_desc = find_pos_arg(cli_module->command_list[num_command], pos_arg++);    
         }
         if (!arg_desc){
-            fprintf(stderr, "This flag or argument not found\n");
             return 0;
         }
 
@@ -160,24 +157,16 @@ void add_positional_argument(cli_module_t *cli_module,
         printf("This possition used");
         return;
     }
-    string_t s_name;
-    string_t help;
-
-    ssyp_string_initialize_with_string(&s_name, name);
-    ssyp_string_initialize_with_string(&help, help_message);
 
     argument_t *flag = flag_initialize();
-    ssyp_string_cpy(&s_name, &flag->long_name);
-    ssyp_string_cpy(&s_name, &flag->short_name);
-    ssyp_string_cpy(&help, &flag->help_message);
+    ssyp_string_initialize_with_string(&flag->long_name, name);
+    ssyp_string_initialize_with_string(&flag->short_name, name);
+    ssyp_string_initialize_with_string(&flag->help_message, help_message);
     
     flag->pos = pos;
     flag_list_t *arg = cli_module->command_list[num_command]->command_arguments;
 
     cli_module->command_list[num_command]->command_arguments = flag_list_insert(arg, flag, arg);
-
-    ssyp_string_destroy(&s_name);
-    ssyp_string_destroy(&help);
 }
 
 
@@ -192,29 +181,17 @@ void add_named_argument(cli_module_t *cli_module,
         printf("Command not found");
         return;
     }
-    string_t s_name;
-    string_t help;
-    string_t l_name;
 
-    ssyp_string_initialize_with_string(&l_name, long_name);
-    ssyp_string_initialize_with_string(&s_name, short_name);
-    ssyp_string_initialize_with_string(&help, help_message);
-    
     argument_t *flag = flag_initialize();
+    ssyp_string_initialize_with_string(&flag->long_name, long_name);
+    ssyp_string_initialize_with_string(&flag->short_name, short_name);
+    ssyp_string_initialize_with_string(&flag->help_message, help_message);
  
     flag->have_arg = have_arg;
-
-    ssyp_string_cpy(&l_name, &flag->long_name);
-    ssyp_string_cpy(&s_name, &flag->short_name);
-    ssyp_string_cpy(&help, &flag->help_message);
 
     flag_list_t *arg = cli_module->command_list[num_command]->command_arguments;
 
     cli_module->command_list[num_command]->command_arguments = flag_list_insert(arg, flag, arg);
-
-    ssyp_string_destroy(&s_name);
-    ssyp_string_destroy(&help);
-    ssyp_string_destroy(&l_name);
 }
 
 void register_command(cli_module_t *cli_module, 
@@ -245,6 +222,24 @@ void register_command(cli_module_t *cli_module,
     ssyp_string_destroy(&help);
 }
 
+
+void cli_destroy(cli_module_t *cli_module){
+   flag_list_destroy(cli_module->user_argument);
+   int ind = 0;
+    while(ind < COUNT){
+        ssyp_string_destroy(&cli_module->command_list[ind]->name);
+        ssyp_string_destroy(&cli_module->command_list[ind]->help_message);
+        flag_list_t *command = cli_module->command_list[ind]->command_arguments;
+        while(command != NULL){
+            ssyp_string_destroy(&command->value->long_name);
+            ssyp_string_destroy(&command->value->short_name);
+            ssyp_string_destroy(&command->value->help_message);
+            command = command->next;
+        }
+        flag_list_destroy(command);
+        ind++;
+    }
+}
 
 
 cli_module_t *cli_create(){
