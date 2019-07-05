@@ -70,8 +70,6 @@ int cat_file(char *sha){
 char* itoa (int numb){
     char buf[10];
     int len = 0;
-    // Review: btw, why you ever need string_t here? 
-    // You can count max length of this char[] (int is not infinite).
     while (numb > 0){
         buf[len] = numb % 10 + '0';
         len++;
