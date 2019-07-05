@@ -25,6 +25,7 @@ int main(int argc, char *argv[]){
         }
         case COMMIT: {
             commit(cli_get_argument(cli_module, "message"));
+        }
         case LOG: {
             git_log(cli_module);
             break;
