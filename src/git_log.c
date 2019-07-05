@@ -9,7 +9,7 @@
 void git_log(cli_module_t *cli_module){
     char path[MAX_PATH_LENGTH] = "";
     get_gg_root_path(path);
-    strcat(path, "/ref/heads/branch");
+    strcat(path, "/refs/heads/branch");
     char parent[SHA_STRING_LENGTH];
     fs_read_to_string(path, parent);
     parent[SHA_STRING_LENGTH - 1] = '\0';
