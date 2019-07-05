@@ -1,24 +1,19 @@
 #ifndef FLAG_LIST_H_
 #define FLAG_LIST_H_
-
-// Review: dont need most header here
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "list.h"
 #include "string_t.h"
+#include "arg_registry.h"
 
-enum Commands {
-    HASH_OBJECT,
-    COUNT
-};
+enum Commands;
 
 struct flag_list;
 
 typedef struct argument {
     int pos;
     string_t long_name;
-    //! Review: short name is 1 symbol. So char would be enougth.
     string_t short_name;
     string_t help_message;
     int have_arg;
@@ -29,13 +24,12 @@ typedef struct argument {
 typedef struct {
     string_t name;
     string_t help_message;
-    //? Review: why you need this?
     int num_command;
     struct flag_list *command_arguments;
 } command_t;
 
 
-typedef struct {
+typedef struct cli_module {
     int num_command; 
     command_t *command_list[COUNT];
     int user_argument_size;
@@ -52,9 +46,7 @@ argument_t *flag_initialize();
 
 int cli_get_command(cli_module_t *cli_module, char *name_command);
 
-void cli_parse(cli_module_t *cli_module, int argc, char **argv);
-
-void cli_register_command(cli_module_t *cli_module);
+int cli_parse(cli_module_t *cli_module, int argc, char **argv);
 
 void add_positional_argument(cli_module_t *cli_module, enum Commands num_command, char *name, int pos, char *help_message);
 
@@ -64,6 +56,7 @@ void register_command(cli_module_t *cli_module, enum Commands num_command, char 
 
 cli_module_t *cli_create();
 
+void cli_destroy(cli_module_t *cli_module);
 //cli_desroy(cli_module_t *cli_module);
 //! Review: cli_destroy?
 #endif
