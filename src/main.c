@@ -3,11 +3,16 @@
 #include "index.h"
 #include "commit-tree.h"
 #include "git_log.h"
+#include "checkout.h"
+#include "config.h"
+#include "help.h"
+
 
 
 int main(int argc, char *argv[]){
     cli_module_t *cli_module = cli_create();
     cli_register_command(cli_module);
+    config_initialize();
     if (cli_parse(cli_module, argc, argv) == 0) {
         fprintf(stderr, "Argument parse error, abort.\n");
     }
