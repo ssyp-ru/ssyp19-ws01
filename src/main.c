@@ -2,11 +2,12 @@
 #include "list.h"
 #include "index.h"
 
-
 int main(int argc, char *argv[]){
     cli_module_t *cli_module = cli_create();
     cli_register_command(cli_module);
-    cli_parse(cli_module, argc, argv);
+    if (cli_parse(cli_module, argc, argv) == 0) {
+        fprintf(stderr, "Argument parse error, abort.\n");
+    }
     switch (cli_module->num_command){
         case UPDATE_INDEX: {
             update_index(cli_get_argument(cli_module, "filepath"));
