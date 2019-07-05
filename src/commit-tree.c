@@ -4,6 +4,7 @@
 #include "string_t.h"
 #include "object.h"
 #include <openssl/sha.h>
+#include "commit-tree.h"
 
 void add_word(string_t *add, char *word, string_t *file_contents){
     ssyp_string_initialize_with_string(add, word);
@@ -11,8 +12,22 @@ void add_word(string_t *add, char *word, string_t *file_contents){
     ssyp_string_destroy(add);
 }
 
+char* get_env_or_default(const char* env_name, char* def_value) {
+    char *env = getenv(env_name);
+    if (env){
+        return env;
+    }
+    return def_value;
+}
 
-void commit_tree(char *parent, char *sha, char *com_mes){
+void commit_tree(cli_module_t * cli_module){
+    char *sha = cli_get_argument(cli_module, "sha");
+    char *parent = cli_get_argument(cli_module, "parent");
+    char *com_mes = cli_get_argument(cli_module, "messgae");
+    if (sha == NULL || com_mes == NULL) {
+        fprintf(stderr, "Not enougth arguments\n");
+        exit(1);
+    }
     string_t pref_file;
     string_t file_contents;
     string_t add;
@@ -24,63 +39,31 @@ void commit_tree(char *parent, char *sha, char *com_mes){
     add_word(&add, "tree ", &file_contents);
     add_word(&add, sha, &file_contents);
     add_word(&add, "\n", &file_contents);
-    if (strlen(parent) > 0){
+    if (parent && strlen(parent) > 0){
         add_word(&add, "parent ", &file_contents);
         add_word(&add, parent, &file_contents);
         add_word(&add, "\n", &file_contents);
     }
 
     add_word(&add, "author ", &file_contents);
-    char str[50] = "";
-    strcpy(getenv("GIT_AUTHOR_NAME"), str);
-    if (str == NULL){
-        add_word(&add, "A_NAME", &file_contents);
-    } else {
-        add_word(&add, str, &file_contents);
-    }
+    add_word(&add, get_env_or_default("GIT_AUTHOR_NAME", "A_NAME"), &file_contents);
 
     add_word(&add, " ", &file_contents);
-    strcpy(getenv("GIT_AUTHOR_EMAIL"), str);
-    if (str == NULL){
-        add_word(&add, "A_EMAIL", &file_contents);
-    } else {
-        add_word(&add, str, &file_contents);
-    }
+    add_word(&add, get_env_or_default("GIT_AUTHOR_EMAIL", "A_EMAIL"), &file_contents);
 
     add_word(&add, " ", &file_contents);
-    strcpy(getenv("GIT_AUTHOR_DATE"), str);
-    if (str == NULL){
-        add_word(&add, "A_DATE", &file_contents);
-    } else {
-        add_word(&add, str, &file_contents);
-    }
+    add_word(&add, get_env_or_default("GIT_AUTHOR_DATE", "A_DATE"), &file_contents);
 
     add_word(&add, "\n", &file_contents);
 
     add_word(&add, "commiter ", &file_contents);
-    strcpy(getenv("GIT_COMMITER_NAME"), str);
-    if (str == NULL){
-        add_word(&add, "C_NAME", &file_contents);
-    } else {
-        add_word(&add, str, &file_contents);
-    }
+    add_word(&add, get_env_or_default("GIT_COMMITER_NAME", "C_NAME"), &file_contents);
 
     add_word(&add, " ", &file_contents);
-    strcpy(getenv("GIT_COMMITER_EMAIL"), str);
-    if (str == NULL){
-        add_word(&add, "C_EMAIL", &file_contents);
-    } else {
-        add_word(&add, str, &file_contents);
-    }
+    add_word(&add, get_env_or_default("GIT_COMMITER_EMAIL", "C_EMAIL"), &file_contents);
 
-    add_word(&add, getenv("GIT_COMMITER_EMAIL"), &file_contents);
     add_word(&add, " ", &file_contents);
-    strcpy(getenv("GIT_COMMITER_DATE"), str);
-    if (str == NULL){
-        add_word(&add, "C_DATE", &file_contents);
-    } else {
-        add_word(&add, str, &file_contents);
-    }
+    add_word(&add, get_env_or_default("GIT_COMMITER_DATE", "C_DATE"), &file_contents);
 
     add_word(&add, "\n", &file_contents);
 
@@ -107,3 +90,4 @@ void commit_tree(char *parent, char *sha, char *com_mes){
     char *path = object_path(new_sha);
     write_str_to_file(&pref_file, path);
 }
+
