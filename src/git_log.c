@@ -1,0 +1,26 @@
+#include <stdio.h>
+#include "cli.h"
+#include "object.h"
+#include "fs.h"
+#include "commit-tree.h"
+#include <string.h>
+
+
+void git_log(cli_module_t *cli_module){
+    char path[MAX_PATH_LENGTH] = "";
+    get_gg_root_path(path);
+    strcat(path, "/ref/heads/branch");
+    char parent[SHA_STRING_LENGTH];
+    fs_read_to_string(path, parent);
+    parent[SHA_STRING_LENGTH - 1] = '\0';
+    char content[350];
+    int i = 0;
+    while(strcmp(parent, "") != 0){
+        strcpy(path, object_path(parent));
+        fs_read_to_string(path, content);
+        strcpy(parent, get_parent(parent, parent));
+        while(content[i++] != '\0');
+        printf("%s\n\n", &content[i]);
+        i = 0;
+    }
+}

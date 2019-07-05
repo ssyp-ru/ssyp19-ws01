@@ -22,7 +22,6 @@ void ssyp_string_print (string_t *str){
     for (int i = 0; i < str->size; i++){
         printf("%c", str->array[i]);
     }
-    printf("\n");
 }
 
 

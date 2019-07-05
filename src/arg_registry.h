@@ -12,6 +12,7 @@ enum Commands {
     CONFIG,
     ADD,
     COMMIT,
+    LOG,
     COUNT
 };
 
