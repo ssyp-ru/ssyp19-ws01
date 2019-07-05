@@ -10,6 +10,10 @@ int main(int argc, char *argv[]){
         fprintf(stderr, "Argument parse error, abort.\n");
     }
     switch (cli_module->num_command){
+        case COMMIT_TREE: {
+            commit_tree(cli_module);
+            break;
+        }
         case UPDATE_INDEX: {
             update_index(cli_get_argument(cli_module, "filepath"));
             // here call for hash_object function
@@ -29,10 +33,6 @@ int main(int argc, char *argv[]){
         }
         case HASH_OBJ: {
             hash_object(cli_get_argument(cli_module, "filepath"));
-            break;
-        }
-        case COMMIT_TREE: {
-            commit_tree(cli_module);
             break;
         }
         default: {

@@ -6,11 +6,6 @@
 #include <openssl/sha.h>
 #include "commit-tree.h"
 
-void add_word(string_t *add, char *word, string_t *file_contents){
-    ssyp_string_initialize_with_string(add, word);
-    ssyp_string_cat(file_contents, add);
-    ssyp_string_destroy(add);
-}
 
 char* get_env_or_default(const char* env_name, char* def_value) {
     char *env = getenv(env_name);
@@ -23,71 +18,65 @@ char* get_env_or_default(const char* env_name, char* def_value) {
 void commit_tree(cli_module_t * cli_module){
     char *sha = cli_get_argument(cli_module, "sha");
     char *parent = cli_get_argument(cli_module, "parent");
-    char *com_mes = cli_get_argument(cli_module, "messgae");
+    char *com_mes = cli_get_argument(cli_module, "message");
+    printf("sha %s, par %s, mes %s\n", sha, parent, com_mes);
     if (sha == NULL || com_mes == NULL) {
         fprintf(stderr, "Not enougth arguments\n");
         exit(1);
     }
-    string_t pref_file;
-    string_t file_contents;
-    string_t add;
+    char pref_file[50] = "";
+    char file_content[300];
     char new_sha[SHA_STRING_LENGTH];
 
-    ssyp_string_initialize(&file_contents, 0);
-    ssyp_string_initialize(&pref_file, 0);
-
-    add_word(&add, "tree ", &file_contents);
-    add_word(&add, sha, &file_contents);
-    add_word(&add, "\n", &file_contents);
-    if (parent && strlen(parent) > 0){
-        add_word(&add, "parent ", &file_contents);
-        add_word(&add, parent, &file_contents);
-        add_word(&add, "\n", &file_contents);
+    strcat(file_content, "tree ");
+    strcat(file_content, sha);
+    strcat(file_content, "\n");
+    if (parent != NULL){
+        strcat(file_content, "parent ");
+        strcat(file_content, parent);
+        strcat(file_content, "\n");
     }
+    strcat(file_content, "author ");
+    strcat(file_content, get_env_or_default("GIT_AUTHOR_NAME", "A_NAME"));
+    strcat(file_content, " ");
+    strcat(file_content, get_env_or_default("GIT_AUTHOR_EMAIL", "A_EMAIL"));
+    strcat(file_content, " ");
+    strcat(file_content, get_env_or_default("GIT_AUTHOR_DATE", "A_DATE"));
+    strcat(file_content, "\n");
+    
+    strcat(file_content, "commiter ");
+    strcat(file_content, get_env_or_default("GIT_COMMITER_NAME", "C_NAME"));
+    strcat(file_content, " ");
+    strcat(file_content, get_env_or_default("GIT_COMMITER_EMAIL", "C_EMAIL"));
+    strcat(file_content, " ");
+    strcat(file_content, get_env_or_default("GIT_COMMITER_DATE", "C_DATE"));
+    strcat(file_content, "\n");
+    strcat(file_content, "\n");
+    strcat(file_content, com_mes);
 
-    add_word(&add, "author ", &file_contents);
-    add_word(&add, get_env_or_default("GIT_AUTHOR_NAME", "A_NAME"), &file_contents);
+    
+    strcat(pref_file, "commit ");
+    int len_content = strlen(file_content);
+    strcat(pref_file, itoa(strlen(file_content)));
+    strcat(pref_file, " ");
+    int len_pref = strlen(pref_file);
 
-    add_word(&add, " ", &file_contents);
-    add_word(&add, get_env_or_default("GIT_AUTHOR_EMAIL", "A_EMAIL"), &file_contents);
-
-    add_word(&add, " ", &file_contents);
-    add_word(&add, get_env_or_default("GIT_AUTHOR_DATE", "A_DATE"), &file_contents);
-
-    add_word(&add, "\n", &file_contents);
-
-    add_word(&add, "commiter ", &file_contents);
-    add_word(&add, get_env_or_default("GIT_COMMITER_NAME", "C_NAME"), &file_contents);
-
-    add_word(&add, " ", &file_contents);
-    add_word(&add, get_env_or_default("GIT_COMMITER_EMAIL", "C_EMAIL"), &file_contents);
-
-    add_word(&add, " ", &file_contents);
-    add_word(&add, get_env_or_default("GIT_COMMITER_DATE", "C_DATE"), &file_contents);
-
-    add_word(&add, "\n", &file_contents);
-
-    add_word(&add, "\n", &file_contents);
-
-    add_word(&add, com_mes, &file_contents);
-    add_word(&add, "commit ", &pref_file);
-    add_word(&add, itoa(file_contents.size), &pref_file);
-    string_t crutch;
-    ssyp_string_initialize(&crutch, 0);
-    crutch.array[0] = '\0';
-    crutch.size++;
-    ssyp_string_cat(&pref_file, &crutch);
-
-    ssyp_string_cat(&pref_file, &file_contents);
-
+    
+    strcat(pref_file, file_content);
+    pref_file[len_pref - 1] = '\0';
+    
     SHA_CTX ctx;
     SHA1_Init(&ctx);
-    SHA1_Update(&ctx, pref_file.array, pref_file.size);
+    SHA1_Update(&ctx, pref_file, len_pref + len_content);
     unsigned char sha_buffer[SHA_DIGEST_LENGTH];
     SHA1_Final(sha_buffer, &ctx);
     dec_to_hex(sha_buffer, new_sha);
 
     char *path = object_path(new_sha);
-    write_str_to_file(&pref_file, path);
+    FILE *f = fopen(path, "w");
+    fwrite(pref_file, sizeof(char), len_pref + len_content, f);
+    fclose(f);
+
+
 }
 
