@@ -29,4 +29,6 @@ void cli_register_command(cli_module_t *cli_module){
     add_positional_argument(cli_module, COMMIT_TREE, "sha", 1, "tree sha you want to commit");
     add_named_argument(cli_module, COMMIT_TREE, "parent", "p", "parent sha you want to commit", 1);
     add_named_argument(cli_module, COMMIT_TREE, "message", "m", "commit message", 1);
+
+    register_command(cli_module, LOG, "log", "log shows all branches");
 }

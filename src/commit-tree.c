@@ -7,6 +7,26 @@
 #include "commit-tree.h"
 
 
+char *get_parent(char *sha, char *str_for_parent){
+    char *path = object_path(sha);
+    char file_str[350];
+    fs_read_to_string(path, file_str);
+    int ind = 0;
+    while(file_str[ind++] != '\n');
+    if(file_str[ind] != 'p'){
+        return "";
+    }
+    int par_ind = 0;
+    while(file_str[ind++] != ' ');
+    while(file_str[ind] != '\n'){
+        str_for_parent[par_ind] = file_str[ind];
+        ind++;
+        par_ind++;
+    }
+    return str_for_parent;
+}
+
+
 char* get_env_or_default(const char* env_name, char* def_value) {
     char *env = getenv(env_name);
     if (env){
@@ -25,7 +45,7 @@ void commit_tree(cli_module_t * cli_module){
         exit(1);
     }
     char pref_file[50] = "";
-    char file_content[300];
+    char file_content[300] = "";
     char new_sha[SHA_STRING_LENGTH];
 
     strcat(file_content, "tree ");

@@ -2,6 +2,8 @@
 #include "list.h"
 #include "index.h"
 #include "commit-tree.h"
+#include "git_log.h"
+
 
 int main(int argc, char *argv[]){
     cli_module_t *cli_module = cli_create();
@@ -12,6 +14,10 @@ int main(int argc, char *argv[]){
     switch (cli_module->num_command){
         case COMMIT_TREE: {
             commit_tree(cli_module);
+            break;
+        }
+        case LOG: {
+            git_log(cli_module);
             break;
         }
         case UPDATE_INDEX: {
