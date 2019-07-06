@@ -8,5 +8,5 @@ unit_test: string_t.o
 	make -C test run
 
 clean:
-	rm *.o main
+	rm *.o
 	make -C test clean

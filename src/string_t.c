@@ -3,7 +3,7 @@
 #include "string_t.h"
 
 
-void reserve (string_t *str, int new_size){
+void ssyp_string_reserve (string_t *str, int new_size){
     if (str->capacity > new_size){
 	return;
     }
@@ -27,7 +27,7 @@ int read_str_from_file (string_t *str, const char* path){
 	return -1;
     }
     int new_size = ftell(f);
-    reserve (str, new_size);
+    ssyp_string_reserve (str, new_size);
     fseek(f, 0, SEEK_SET);
     fread(str->array, sizeof(char), new_size, f);
     str->size = new_size;
@@ -35,7 +35,7 @@ int read_str_from_file (string_t *str, const char* path){
 }
 
 
-int ssyp_strcmp (string_t *s1, string_t *s2){
+int ssyp_string_cmp (string_t *s1, string_t *s2){
     int iter = 0;
     while (s1->array[iter] == s2->array[iter] && s1->array[iter] != 0 && s2->array[iter] != 0){
 	iter++;
@@ -49,12 +49,12 @@ int ssyp_strcmp (string_t *s1, string_t *s2){
 }
 
 
-void ssyp_strcpy (string_t *from, string_t *to){
+void ssyp_string_cpy (string_t *from, string_t *to){
     if (from->size > to->capacity){
 	if (to->capacity * 2 > from->size){
-	    reserve (to, to->capacity * 2);
+	    ssyp_string_reserve (to, to->capacity * 2);
 	} else {
-	    reserve (to, from->size + 1);
+	    ssyp_string_reserve (to, from->size + 1);
 	}
     }
     for (int i = 0; i < from->size; i++){
@@ -64,12 +64,12 @@ void ssyp_strcpy (string_t *from, string_t *to){
 }
 
 
-void ssyp_strcat (string_t *s1, string_t *s2){
+void ssyp_string_cat (string_t *s1, string_t *s2){
     if (s1->size + s2->size > s1->capacity){
 	if (s1->capacity * 2 > s1->size + s2->size){
-	    reserve (s1, s1->capacity * 2);
+	    ssyp_string_reserve (s1, s1->capacity * 2);
 	} else {
-	    reserve (s1, s1->size + s2->size + 1);
+	    ssyp_string_reserve (s1, s1->size + s2->size + 1);
 	}
     }
     s1->array[s1->size] = s2->array[0];
@@ -80,7 +80,7 @@ void ssyp_strcat (string_t *s1, string_t *s2){
 }
 
 
-void initialize (string_t *str, int init_size){
+void ssyp_string_initialize (string_t *str, int init_size){
     
     str->array = (char*)malloc(sizeof(char) * init_size);
     str->size = 0;
@@ -88,7 +88,7 @@ void initialize (string_t *str, int init_size){
 }
 
 
-void destroy (string_t *str){
+void ssyp_string_destroy (string_t *str){
     free(str->array);
     str->array = NULL;
     str->size = 0;

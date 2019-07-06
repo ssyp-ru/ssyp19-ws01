@@ -11,25 +11,25 @@ typedef struct{
 }string_t;
 
 
-void reserve (string_t *str, int new_size);
+void ssyp_string_reserve (string_t *str, int new_size);
 
 
 int read_str_from_file (string_t *str, const char* path);
 
 
-int ssyp_strcmp (string_t *s1, string_t *s2);
+int ssyp_string_cmp (string_t *s1, string_t *s2);
 
 
-void ssyp_strcpy (string_t *from, string_t *to);
+void ssyp_string_cpy (string_t *from, string_t *to);
 
 
-void ssyp_strcat (string_t *s1, string_t *s2);
+void ssyp_string_cat (string_t *s1, string_t *s2);
 
 
-void initialize (string_t *str, int init_size);
+void ssyp_string_initialize (string_t *str, int init_size);
 
 
-void destroy (string_t *str);
+void ssyp_string_destroy (string_t *str);
 
 
 int write_str_to_file (string_t *str, const char* path);
