@@ -8,7 +8,6 @@
 #define SHA_STRING_LENGTH (SHA_DIGEST_LENGTH * 2 + 1)
 
 
-// Review: well, I guess I dont need to review 8_hash_object ...
 
 enum object_type {
     BLOB,
@@ -16,25 +15,14 @@ enum object_type {
     COMMIT
 };
 
-// Review: better make one enum with all kind of errors
-// something like
-// enum obj_return_code {
-//      OK,
-//      CANT_GET_ROOT_FOLDER,
-//      ...
-//};
-enum get_blob_error_code {
-    READ_ERROR,
-    NOT_BLOB,
-    OK    
-};
 
-enum save_blob_error_code {
-    SAVE_ERROR,
-    SAVED,
-    NICE
+enum obj_return_code {
+    OK,
+    CANT_GET_ROOT_FOLDER,
+    CANT_OPEN_FILE,
+    ALREADY_SAVED,
+    NOT_BLOB_FILE
 };
-
 typedef struct {
     char *name;
     char *mode;
@@ -58,8 +46,10 @@ typedef struct {
 
 FILE* get_object_type(char sha[20], int do_not_close_file);
 
-enum get_blob_error_code get_blob_from_storage(char sha[SHA_STRING_LENGTH], string_t * data);
-enum save_blob_error_code save_blob_to_storage(string_t * data, char sha[SHA_STRING_LENGTH]);
+enum obj_return_code hash_object(char *path);
+
+enum obj_return_code get_blob_from_storage(char sha[SHA_STRING_LENGTH], string_t * data);
+enum obj_return_code save_blob_to_storage(string_t * data, char sha[SHA_STRING_LENGTH]);
 
 int cat_file(char *path);
 

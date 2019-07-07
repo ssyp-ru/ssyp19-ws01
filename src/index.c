@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "string_t.h"
 #include "fs.h"
 #include "object.h"
@@ -7,40 +9,51 @@
 
 // Use cli_module. THIS IS A PRIORITY!
 
-int update_index(char *path){
+enum obj_return_code update_index(char *path){
     string_t data;
     ssyp_string_initialize(&data, 0);
     read_str_from_file(&data, path);
     char sha[SHA_STRING_LENGTH];
-    // Review: do not understand. What if blob exists in objects, but not added to index yet.
-    // Will it be added? (it should)
-    if (save_blob_to_storage(&data, sha) == SAVED){
-        return 1;
-    }
-    // Review: not BUF_SIZE
-    char index_path[BUF_SIZE];
+    char index_path[MAX_PATH_LENGTH];
     if (get_gg_root_path(index_path) == -1){
-        return 0;
+        return CANT_GET_ROOT_FOLDER;
+    }
+    char objects_path[MAX_PATH_LENGTH];
+    strcpy(objects_path, index_path);
+    strcat(objects_path, "/objects/");
+    enum obj_return_code return_value= save_blob_to_storage(&data, sha);
+    strcat(objects_path, sha);
+    if (return_value == ALREADY_SAVED){
+        return ALREADY_SAVED;
     }
     strcat(index_path, "/index");
-    FILE *f = fopen(index_path, "a");
+    FILE *f = fopen(index_path, "a+");
     if (f == NULL){
-        return 0;
+        return CANT_OPEN_FILE;
     }
+    int buf_len = SHA_STRING_LENGTH + MAX_PATH_LENGTH + 2;
+    char *buf = (char*)malloc(sizeof(char) * buf_len);
+    while (fgets(buf, buf_len, f) != NULL){
+        if (!strncmp(buf, sha, SHA_STRING_LENGTH)){
+            free(buf);
+            fclose(f);
+            return ALREADY_SAVED;
+        }
+    }
+    free(buf);
     fputs(sha, f);
     fputs(" ", f);
     fputs(path, f);
     fputs("\n", f);
     fclose(f);
-    return 1;
+    return OK;
 }
 
 
 void ls_files(){
     string_t data;
     ssyp_string_initialize(&data, 0);
-    // Review: you know what I want to say =)
-    char path[BUF_SIZE];
+    char path[MAX_PATH_LENGTH];
     if (get_gg_root_path(path) == -1){
         return;
     }
@@ -54,24 +67,20 @@ void ls_files(){
 // see object.h for tree object struct
 
 //<mode> <filename>0<sha>
-enum save_blob_error_code write_tree(){
-    // Review: you really overuse string_t. I accept your love to each other,
-    // but keep it to yourselfs. Try to use simple char[] where you can.
-    string_t ans;
-    ssyp_string_initialize_with_string(&ans, "tree ");
+enum obj_return_code write_tree(){
     string_t data;
     ssyp_string_initialize(&data, 0);
-    // Review: try to make more expressive names. F.e. index_path
-    char path[BUF_SIZE];
-    if (get_gg_root_path(path) == -1){
-        return SAVE_ERROR;
+    char index_path[MAX_PATH_LENGTH];
+    if (get_gg_root_path(index_path) == -1){
+        return CANT_GET_ROOT_FOLDER;
     }
-    strcat(path, "/index");
-    read_str_from_file(&data, path);
+    strcat(index_path, "/index");
+    if (read_str_from_file(&data, index_path) == -1){
+        return CANT_OPEN_FILE;
+    }
     int iter = 0;
     string_t str;
-    // Review: you may initizlize it with data.size. It would be better than 0
-    ssyp_string_initialize(&str, 0);
+    ssyp_string_initialize(&str, data.size);
     char sha[SHA_STRING_LENGTH];
     while (iter < data.size){
         ssyp_string_char_cat(&str, "100644 ");
@@ -87,31 +96,35 @@ enum save_blob_error_code write_tree(){
     }
     ssyp_string_destroy(&data);
     char *str_len = itoa(str.size);
-    ssyp_string_char_cat(&ans, str_len);
-    ssyp_string_char_cat(&ans, "\0");
+    int ans_len = strlen(str_len) + 6;
+    char *ans = (char*)malloc(sizeof(char) * ans_len);
+    strcpy(ans, "tree ");
+    strcat(ans, str_len);
+    strcat(ans, "\0");
     SHA_CTX ctx;
     SHA1_Init(&ctx);
-    SHA1_Update(&ctx, ans.array, ans.size);
+    SHA1_Update(&ctx, ans, ans_len);
     SHA1_Update(&ctx, str.array, str.size);
     unsigned char sha_buffer[SHA_DIGEST_LENGTH];
     SHA1_Final(sha_buffer, &ctx);
     dec_to_hex(sha_buffer, sha);
-    if (get_gg_root_path(path) == -1){
-        return SAVE_ERROR;
+    char objects_path[MAX_PATH_LENGTH];
+    if (get_gg_root_path(objects_path) == -1){
+        return CANT_GET_ROOT_FOLDER;
     }
-    strcat(path, "/objects/");
-    strcat(path, sha);
-    if (is_file(path) == 1){
-        return SAVED;
+    strcat(objects_path, "/objects/");
+    strcat(objects_path, sha);
+    if (is_file(objects_path) == 1){
+        return ALREADY_SAVED;
     }
-    FILE *f = fopen(path, "w");
+    FILE *f = fopen(objects_path, "w");
     if (f == NULL){
-        return SAVE_ERROR;
+        return CANT_OPEN_FILE;
     }
-    fwrite(ans.array, sizeof(char), ans.size, f);
-    ssyp_string_destroy(&ans);
+    fwrite(ans, sizeof(char), ans_len, f);
+    free(ans);
     fwrite(str.array, sizeof(char), str.size, f);
     ssyp_string_destroy(&str);
     fclose(f);
-    return NICE;
+    return OK;
 }

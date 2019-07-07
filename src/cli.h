@@ -9,7 +9,11 @@
 #include "string_t.h"
 
 enum Commands {
-    HASH_OBJECT,
+    UPDATE_INDEX,
+    WRITE_TREE,
+    LS_FILES,
+    CAT_FILE,
+    HASH_OBJ,
     COUNT
 };
 
