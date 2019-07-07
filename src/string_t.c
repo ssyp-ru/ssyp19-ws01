@@ -49,6 +49,7 @@ int read_str_from_file (string_t *str, const char* path){
     ssyp_string_reserve (str, new_size);
     fseek(f, 0, SEEK_SET);
     fread(str->array, sizeof(char), new_size, f);
+    fclose(f);
     str->size = new_size;
     return new_size;
 }
@@ -145,5 +146,7 @@ int write_str_to_file (string_t *str, const char* path){
     if (f == NULL){
 	    return -1;
     }
-    return fwrite(str->array, sizeof(char), str->size, f);
+    int ans = fwrite(str->array, sizeof(char), str->size, f);
+    fclose(f);
+    return ans;
 }
