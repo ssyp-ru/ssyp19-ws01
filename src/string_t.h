@@ -20,7 +20,7 @@ int write_str_to_file (string_t *str, const char* path);
 
 void ssyp_string_reserve (string_t *str, int new_size);
 
-void ssyp_string_add_str_in_end (string_t *str, char *array);
+void ssyp_string_char_cat (string_t *str, char *array);
 
 int ssyp_string_cmp (string_t *s1, string_t *s2);
 

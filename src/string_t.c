@@ -18,7 +18,7 @@ void ssyp_string_reserve (string_t *str, int new_size){
 }
 
 
-void ssyp_string_add_str_in_end (string_t *str, char *array){
+void ssyp_string_char_cat (string_t *str, char *array){
     if (str == NULL || array == NULL){
         return;
     }
