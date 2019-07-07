@@ -8,7 +8,7 @@
 char hex_chars[16] = "0123456789abcdef";
 
 
-enum get_blob_error_code get_blob_from_storage(char sha[SHA_DIGEST_LENGTH], string_t * data){
+enum get_blob_error_code get_blob_from_storage(char sha[SHA_STRING_LENGTH], string_t * data){
     string_t buf;
     ssyp_string_initialize(&buf, 1);
     char path[BUF_SIZE];
