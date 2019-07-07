@@ -18,6 +18,8 @@ int read_str_from_stream (string_t *str, FILE *f);
 
 int write_str_to_file (string_t *str, const char* path);
 
+void ssyp_string_print (string_t *str);
+
 void ssyp_string_reserve (string_t *str, int new_size);
 
 void ssyp_string_char_cat (string_t *str, char *array);
