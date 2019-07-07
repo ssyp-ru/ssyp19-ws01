@@ -13,7 +13,7 @@ enum object_type {
     COMMIT
 };
 
-enum return_value {
+enum get_blob_error_code {
     READ_ERROR,
     NOT_BLOB,
     OK    
@@ -42,7 +42,7 @@ typedef struct {
 
 FILE* get_object_type(char sha[20], int do_not_close_file);
 
-int get_blob_from_storage(char sha[SHA_STRING_LENGTH], string_t * data);
+enum get_blob_error_code get_blob_from_storage(char sha[SHA_DIGEST_LENGTH], string_t * data);
 void save_blob_to_storage(string_t * data, char sha[SHA_STRING_LENGTH]);
 
 int cat_file(char *path);

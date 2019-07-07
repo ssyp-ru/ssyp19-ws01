@@ -8,7 +8,7 @@
 char hex_chars[16] = "0123456789abcdef";
 
 
-int get_blob_from_storage(char sha[SHA_DIGEST_LENGTH], string_t * data){
+enum get_blob_error_code get_blob_from_storage(char sha[SHA_DIGEST_LENGTH], string_t * data){
     string_t buf;
     ssyp_string_initialize(&buf, 1);
     char path[BUF_SIZE];
@@ -93,10 +93,10 @@ void save_blob_to_storage(string_t * data, char sha[SHA_STRING_LENGTH]){
     ans.size = 5;
     strcat(ans.array, itoa(data->size, numb));
     ans.size += strlen(numb) + 1;
-    ssyp_string_cat(&ans, data);
     SHA_CTX ctx; 
     SHA1_Init(&ctx);
     SHA1_Update(&ctx, ans.array, ans.size);
+    SHA1_Update(&ctx, data->array, data->size);
     unsigned char sha_buffer[SHA_DIGEST_LENGTH];
     SHA1_Final(sha_buffer, &ctx);
     dec_to_hex(sha_buffer, sha);
@@ -106,6 +106,12 @@ void save_blob_to_storage(string_t * data, char sha[SHA_STRING_LENGTH]){
     }
     strcat(path, "/objects/");
     strcat(path, sha);
-    write_str_to_file(&ans, path);
+    FILE *f = fopen(path, "w");
+    if (f == NULL){
+        return;
+    }
+    fwrite(ans.array, sizeof(char), ans.size, f);
     ssyp_string_destroy(&ans);
+    fwrite(data->array, sizeof(char), data->size, f);
+    fclose(f);
 }
