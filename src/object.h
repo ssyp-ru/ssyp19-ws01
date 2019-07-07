@@ -12,6 +12,11 @@ enum object_type {
     COMMIT
 };
 
+enum return_value {
+    READ_ERROR,
+    NOT_BLOB
+};
+
 typedef struct {
     char *name;
     char *mode;
