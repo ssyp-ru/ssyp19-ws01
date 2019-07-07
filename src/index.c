@@ -5,15 +5,19 @@
 #include "index.h"
 #include <openssl/sha.h>
 
+// Use cli_module. THIS IS A PRIORITY!
 
 int update_index(char *path){
     string_t data;
     ssyp_string_initialize(&data, 0);
     read_str_from_file(&data, path);
     char sha[SHA_STRING_LENGTH];
+    // Review: do not understand. What if blob exists in objects, but not added to index yet.
+    // Will it be added? (it should)
     if (save_blob_to_storage(&data, sha) == SAVED){
         return 1;
     }
+    // Review: not BUF_SIZE
     char index_path[BUF_SIZE];
     if (get_gg_root_path(index_path) == -1){
         return 0;
@@ -35,6 +39,7 @@ int update_index(char *path){
 void ls_files(){
     string_t data;
     ssyp_string_initialize(&data, 0);
+    // Review: you know what I want to say =)
     char path[BUF_SIZE];
     if (get_gg_root_path(path) == -1){
         return;
@@ -44,12 +49,19 @@ void ls_files(){
     ssyp_string_print(&data);
 }
 
+
+// Review: now you should read tree object
+// see object.h for tree object struct
+
 //<mode> <filename>0<sha>
 enum save_blob_error_code write_tree(){
+    // Review: you really overuse string_t. I accept your love to each other,
+    // but keep it to yourselfs. Try to use simple char[] where you can.
     string_t ans;
     ssyp_string_initialize_with_string(&ans, "tree ");
     string_t data;
     ssyp_string_initialize(&data, 0);
+    // Review: try to make more expressive names. F.e. index_path
     char path[BUF_SIZE];
     if (get_gg_root_path(path) == -1){
         return SAVE_ERROR;
@@ -58,6 +70,7 @@ enum save_blob_error_code write_tree(){
     read_str_from_file(&data, path);
     int iter = 0;
     string_t str;
+    // Review: you may initizlize it with data.size. It would be better than 0
     ssyp_string_initialize(&str, 0);
     char sha[SHA_STRING_LENGTH];
     while (iter < data.size){
