@@ -34,8 +34,10 @@ typedef struct {
 
 FILE* get_object_type(char sha[20], int do_not_close_file);
 
-void get_blob_from_storage(char sha[20], string_t * data);
+int get_blob_from_storage(char sha[20], string_t * data);
 void save_blob_to_storage(string_t * data, char sha[20]);
+
+int cat_file(char *path);
 
 // void get_tree_from_storage(char sha[20], vector_tree_t * tree_object);
 // void set_tree_to_storage(vector_tree_t * tree_object, char sha[20]);
