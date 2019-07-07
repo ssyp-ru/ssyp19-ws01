@@ -55,17 +55,23 @@ int cat_file(char *sha){
 
 
 
-char* itoa (int numb, char *ans){
-    char buf[10];
-    int len = 0;
+char* itoa (int numb){
+    string_t buf;
+    ssyp_string_initialize(&buf, 0);
     while (numb > 0){
-        buf[len] = numb % 10 + '0';
+        if (buf.size >= buf.capacity){
+            ssyp_string_reserve(&buf, buf.capacity * 2);
+        }
+        buf.array[buf.size] = numb % 10 + '0';
         numb /= 10;
-        len++;
+        buf.size++;
     }
-    for (int i = len - 1; i >= 0; i--){
-        ans[len - i - 1] = buf[i];
+    int len = buf.size;
+    char *ans = (char*)malloc(sizeof(char) * len);
+    for (int i = 0; i < len; i++){
+        ans[len - i - 1] = buf.array[i];
     }
+    ssyp_string_destroy(&buf);
     ans[len] = 0;
     return ans;
 }
@@ -85,13 +91,13 @@ void dec_to_hex (unsigned char sha[SHA_DIGEST_LENGTH], char sha_result[SHA_STRIN
 }
 
 
-void save_blob_to_storage(string_t * data, char sha[SHA_STRING_LENGTH]){
+enum save_blob_error_code save_blob_to_storage(string_t * data, char sha[SHA_STRING_LENGTH]){
     string_t ans;
     ssyp_string_initialize(&ans, 16);
     char numb[10], blob[15] = "blob ";
     strcpy(ans.array, blob);
     ans.size = 5;
-    strcat(ans.array, itoa(data->size, numb));
+    strcat(ans.array, itoa(numb));
     ans.size += strlen(numb) + 1;
     SHA_CTX ctx; 
     SHA1_Init(&ctx);
@@ -102,16 +108,20 @@ void save_blob_to_storage(string_t * data, char sha[SHA_STRING_LENGTH]){
     dec_to_hex(sha_buffer, sha);
     char path[BUF_SIZE];
     if (get_gg_root_path(path) == -1){
-        return;
+        return SAVE_ERROR;
     }
     strcat(path, "/objects/");
     strcat(path, sha);
+    if (is_file(path) == 1){
+        return SAVED;
+    }
     FILE *f = fopen(path, "w");
     if (f == NULL){
-        return;
+        return SAVE_ERROR;
     }
     fwrite(ans.array, sizeof(char), ans.size, f);
     ssyp_string_destroy(&ans);
     fwrite(data->array, sizeof(char), data->size, f);
     fclose(f);
+    return NICE;
 }

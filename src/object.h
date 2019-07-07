@@ -19,6 +19,12 @@ enum get_blob_error_code {
     OK    
 };
 
+enum save_blob_error_code {
+    SAVE_ERROR,
+    SAVED,
+    NICE
+};
+
 typedef struct {
     char *name;
     char *mode;
@@ -43,9 +49,13 @@ typedef struct {
 FILE* get_object_type(char sha[20], int do_not_close_file);
 
 enum get_blob_error_code get_blob_from_storage(char sha[SHA_STRING_LENGTH], string_t * data);
-void save_blob_to_storage(string_t * data, char sha[SHA_STRING_LENGTH]);
+enum save_blob_error_code save_blob_to_storage(string_t * data, char sha[SHA_STRING_LENGTH]);
 
 int cat_file(char *path);
+
+char* itoa(int numb);
+
+void dec_to_hex(unsigned char sha[SHA_DIGEST_LENGTH], char sha_result[SHA_STRING_LENGTH]);
 
 // void get_tree_from_storage(char sha[20], vector_tree_t * tree_object);
 // void set_tree_to_storage(vector_tree_t * tree_object, char sha[20]);
