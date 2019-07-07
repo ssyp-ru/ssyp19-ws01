@@ -94,10 +94,11 @@ void dec_to_hex (unsigned char sha[SHA_DIGEST_LENGTH], char sha_result[SHA_STRIN
 enum save_blob_error_code save_blob_to_storage(string_t * data, char sha[SHA_STRING_LENGTH]){
     string_t ans;
     ssyp_string_initialize(&ans, 16);
-    char numb[10], blob[15] = "blob ";
+    char blob[15] = "blob ";
     strcpy(ans.array, blob);
     ans.size = 5;
-    strcat(ans.array, itoa(numb));
+    char *numb = itoa(data->size);
+    strcat(ans.array, numb);
     ans.size += strlen(numb) + 1;
     SHA_CTX ctx; 
     SHA1_Init(&ctx);
