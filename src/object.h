@@ -2,6 +2,7 @@
 #define OBJECT_H_
 #include <openssl/sha.h>
 #include "string_t.h"
+#include "fs.h"
 
 #define MAX_PARENT_COUNT 10
 #define SHA_STRING_LENGTH (SHA_DIGEST_LENGTH * 2 + 1)
@@ -14,7 +15,8 @@ enum object_type {
 
 enum return_value {
     READ_ERROR,
-    NOT_BLOB
+    NOT_BLOB,
+    OK    
 };
 
 typedef struct {

@@ -2,6 +2,7 @@
 #include <openssl/sha.h>
 #include "string_t.h"
 #include "object.h"
+#include "fs.h"
 
 
 char hex_chars[16] = "0123456789abcdef";
@@ -10,7 +11,13 @@ char hex_chars[16] = "0123456789abcdef";
 int get_blob_from_storage(char sha[SHA_DIGEST_LENGTH], string_t * data){
     string_t buf;
     ssyp_string_initialize(&buf, 1);
-    if (read_str_from_file(&buf, sha) == -1){
+    char path[BUF_SIZE];
+    if (get_gg_root_path(path) == -1){
+        return READ_ERROR;
+    }
+    strcat(path, "/objects/");
+    strcat(path, sha);
+    if (read_str_from_file(&buf, path) == -1){
         return READ_ERROR;
     }
     if (strncmp(buf.array, "blob ", 5)){
@@ -27,7 +34,7 @@ int get_blob_from_storage(char sha[SHA_DIGEST_LENGTH], string_t * data){
     data->size = len - iter - 1;
     strcpy(data->array, buf.array + (iter + 1));
     ssyp_string_destroy(&buf);
-    return data->size;
+    return OK;
 }
 
 
@@ -93,6 +100,12 @@ void save_blob_to_storage(string_t * data, char sha[SHA_STRING_LENGTH]){
     unsigned char sha_buffer[SHA_DIGEST_LENGTH];
     SHA1_Final(sha_buffer, &ctx);
     dec_to_hex(sha_buffer, sha);
-    write_str_to_file(&ans, sha);
+    char path[BUF_SIZE];
+    if (get_gg_root_path(path) == -1){
+        return;
+    }
+    strcat(path, "/objects/");
+    strcat(path, sha);
+    write_str_to_file(&ans, path);
     ssyp_string_destroy(&ans);
 }
