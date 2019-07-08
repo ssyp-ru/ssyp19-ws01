@@ -2,11 +2,12 @@
 #include <string.h>
 #include "object.h"
 #include "string_t.h"
+#include "checkout.h"
 
 
 enum obj_return_code checkout(char *sha){
     char *objects_path = object_path(sha);
-    if (strlen(object_path) == 0){
+    if (strlen(objects_path) == 0){
         return CANT_GET_ROOT_FOLDER;
     }
     string_t data;
@@ -18,9 +19,26 @@ enum obj_return_code checkout(char *sha){
     while (data.array[iter] != '\0' && iter < data.size){
         iter++;
     }
+    iter+=6;
+    char tree_sha[SHA_STRING_LENGTH];
+    strncpy(tree_sha, data.array + iter, SHA_STRING_LENGTH - 1);
+    ssyp_string_destroy(&data);
+    iter = 0;
+    tree_sha[SHA_STRING_LENGTH - 1] = '\0';
+    objects_path = object_path(tree_sha);
+    if (strlen(objects_path) == 0){
+        return CANT_GET_ROOT_FOLDER;
+    }
+    ssyp_string_initialize(&data, 0);
+    if (read_str_from_file(&data, objects_path) == -1){
+        return CANT_OPEN_FILE;
+    }
+    while (data.array[iter] != '\0' && iter < data.size){
+        iter++;
+    }
     char path[MAX_PATH_LENGTH];
     char file_sha[SHA_STRING_LENGTH];
-    file_sha[SHA_STRING_LENGTH] = '\0';
+    file_sha[SHA_STRING_LENGTH - 1] = '\0';
     int path_iter = 0;
     string_t file_data;
     ssyp_string_initialize(&file_data, 0);

@@ -75,7 +75,7 @@ void ls_files(){
 // see object.h for tree object struct
 
 //<mode> <filename>0<sha>
-enum obj_return_code write_tree(){
+enum obj_return_code write_tree(char *tree_sha){
     string_t data;
     ssyp_string_initialize(&data, 0);
     char *index_path = get_index_path();
@@ -90,6 +90,7 @@ enum obj_return_code write_tree(){
     ssyp_string_initialize(&str, data.size);
     char sha[SHA_STRING_LENGTH];
     char buf[1];
+    buf[1] = '\0';
     string_t null;
     ssyp_string_initialize(&null, 0);
     null.array[0] = '\0';
@@ -121,8 +122,8 @@ enum obj_return_code write_tree(){
     SHA1_Update(&ctx, str.array, str.size);
     unsigned char sha_buffer[SHA_DIGEST_LENGTH];
     SHA1_Final(sha_buffer, &ctx);
-    dec_to_hex(sha_buffer, sha);
-    char *objects_path = object_path(sha);
+    dec_to_hex(sha_buffer, tree_sha);
+    char *objects_path = object_path(tree_sha);
     if (strlen(objects_path) == 0){
         return CANT_GET_ROOT_FOLDER;
     }

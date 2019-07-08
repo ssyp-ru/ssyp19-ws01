@@ -8,14 +8,6 @@
 #define SHA_STRING_LENGTH (SHA_DIGEST_LENGTH * 2 + 1)
 
 
-
-enum object_type {
-    BLOB,
-    TREE,
-    COMMIT
-};
-
-
 enum obj_return_code {
     OK,
     CANT_GET_ROOT_FOLDER,
@@ -23,12 +15,6 @@ enum obj_return_code {
     ALREADY_SAVED,
     NOT_BLOB_FILE
 };
-typedef struct {
-    char *name;
-    char *mode;
-    char *sha;
-    enum object_type type; // can be BLOB or TREE
-} tree_entry_t;
 
 typedef struct {
     char tree_sha[20];

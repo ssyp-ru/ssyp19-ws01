@@ -10,6 +10,7 @@ enum Commands {
     COMMIT_TREE,
     CHECKOUT,
     ADD,
+    COMMIT,
     COUNT
 };
 
