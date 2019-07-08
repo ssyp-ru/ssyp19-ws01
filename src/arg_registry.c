@@ -4,13 +4,13 @@
 #include "arg_registry.h"
 #include "cli.h"
 
-
 void cli_register_command(cli_module_t *cli_module){ 
     register_command(cli_module, UPDATE_INDEX, "update-index", "add file to index");
-    //add_named_argument(cli_module, HASH_OBJECT, "write", "w", "", 0);
     add_positional_argument(cli_module, UPDATE_INDEX, "filepath", 1, "path to file");
 
     
+    register_command(cli_module, DIFF, "diff", "file difference");
+
     register_command(cli_module, LS_FILES, "ls-files", "list of indexed files");
 
     
@@ -42,9 +42,11 @@ void cli_register_command(cli_module_t *cli_module){
 
     register_command(cli_module, ADD, "add", "create gg object and index it");
     add_positional_argument(cli_module, ADD, "filepath", 1, "path to file");
-
+    
+    register_command(cli_module, INIT, "init", "initialize gg folder");
 
     register_command(cli_module, COMMIT, "commit", "help message");
     add_positional_argument(cli_module, COMMIT, "message", 1, "commit message");
     register_command(cli_module, LOG, "log", "log shows all branches");
+
 }

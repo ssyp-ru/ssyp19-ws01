@@ -13,6 +13,8 @@ enum Commands {
     ADD,
     COMMIT,
     LOG,
+    DIFF,
+    INIT,
     COUNT
 };
 

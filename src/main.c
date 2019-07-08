@@ -1,3 +1,5 @@
+#include "text_diff.h"
+#include <stdio.h>
 #include "cli.h"
 #include "list.h"
 #include "index.h"
@@ -8,7 +10,14 @@
 #include "checkout.h"
 #include "config.h"
 #include "help.h"
+#include "text_diff.h"
+#include "init.h"
 
+void printim(diff_t **diffs, int num){
+    for(int i = num - 1; i >= 0; i--){
+        printf("(%d %d %d %d %d)\n", diffs[i]->s1_from, diffs[i]->s1_len, diffs[i]->s2_from, diffs[i]->s2_len, diffs[i]->diff_type );
+    }
+}
 
 
 int main(int argc, char *argv[]){
@@ -69,6 +78,14 @@ int main(int argc, char *argv[]){
         }
         case ADD: {
             update_index(cli_get_argument(cli_module, "filepath"));
+            break;
+        }
+        case DIFF: {
+            diff();
+            break;
+        }
+        case INIT:{
+            init();
             break;
         }
         default: {

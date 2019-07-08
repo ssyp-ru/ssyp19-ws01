@@ -83,7 +83,7 @@ int cli_parse(cli_module_t *cli_module, int argc, char **argv){
     }
     if(argc >= 2 && strcmp(argv[1], "--help") == 0){
         help(cli_module);
-        return 1;
+        exit(1);
     }
     int num_command = cli_get_command(cli_module, argv[1]);
     if(!(num_command + 1)){
