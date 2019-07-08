@@ -67,13 +67,19 @@ int read_str_from_stream (string_t *str, FILE *f){
 
 int ssyp_string_cmp (string_t *s1, string_t *s2){
     int iter = 0;
-    while (s1->array[iter] != 0 && s2->array[iter] != 0){
+    while (iter < s1->size && iter < s2->size){
 	    if (s1->array[iter] < s2->array[iter]){
 	        return -1;
         } else if (s1->array[iter] > s2->array[iter]){
 	        return 1;
         }
         iter++;
+    }
+    if (iter != s1->size){
+        return -1;
+    }
+    if (iter != s2->size){
+        return 1;
     }
     return 0;
 }
