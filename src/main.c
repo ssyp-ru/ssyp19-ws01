@@ -4,6 +4,7 @@
 #include "commit-tree.h"
 #include "checkout.h"
 #include "config.h"
+#include "commit.h"
 
 
 int main(int argc, char *argv[]){
@@ -19,6 +20,10 @@ int main(int argc, char *argv[]){
             commit_tree(cli_module);
             break;
         }
+        case COMMIT: {
+            commit(cli_get_argument(cli_module, "message"));
+            break;
+        }
         case UPDATE_INDEX: {
             update_index(cli_get_argument(cli_module, "filepath"));
             // here call for hash_object function
@@ -29,7 +34,8 @@ int main(int argc, char *argv[]){
             break;
         }
         case WRITE_TREE: {
-            write_tree();
+            char sha[SHA_STRING_LENGTH];
+            write_tree(sha);
             break;
         }
         case CAT_FILE: {
@@ -53,6 +59,10 @@ int main(int argc, char *argv[]){
             if (email) {
                 config_set_email(email);
             }
+            break;
+        }
+        case ADD: {
+            update_index(cli_get_argument(cli_module, "filepath"));
             break;
         }
         default: {

@@ -19,13 +19,18 @@ void commit_tree(cli_module_t * cli_module){
     char *sha = cli_get_argument(cli_module, "sha");
     char *parent = cli_get_argument(cli_module, "parent");
     char *com_mes = cli_get_argument(cli_module, "message");
-    printf("sha %s, par %s, mes %s\n", sha, parent, com_mes);
     if (sha == NULL || com_mes == NULL) {
         fprintf(stderr, "Not enougth arguments\n");
         exit(1);
     }
+    commit_tree_impl(sha, parent, com_mes);
+}
+void commit_tree_impl(char tree_sha[SHA_STRING_LENGTH], char parent[SHA_STRING_LENGTH], char* message){
+    char *sha = tree_sha;
+    char *com_mes = message;
+    printf("sha %s, par %s, mes %s\n", sha, parent, com_mes);
     char pref_file[50] = "";
-    char file_content[300];
+    char file_content[300] = "";
     char new_sha[SHA_STRING_LENGTH];
 
     strcat(file_content, "tree ");

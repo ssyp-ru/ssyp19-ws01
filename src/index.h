@@ -8,6 +8,6 @@ enum obj_return_code update_index(char *path);
 
 void ls_files();
 
-enum obj_return_code write_tree();
+enum obj_return_code write_tree(char *tree_sha);
 
 #endif
