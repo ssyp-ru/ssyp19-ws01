@@ -17,13 +17,21 @@ enum Commands {
     CHECKOUT_COMMAND,
     ...
 };
+
+void cli_register_commands(cli_module_t * cli_module) {
+// ...
 // comand register
-command_handler_t * command_handler = register_command(cli_module, "checkout", CHECKOUT_COMMAND, "help message");
-add_named_argument(command_handler, "long_name", "l", , "help message");
-add_positional_argument(command_handler, "name", 1, , "help message");
+register_command(cli_module, CHECKOUT_COMMAND, "checkout", "help message");
+add_named_argument(cli_module, CHECKOUT_COMMAND, "long_name", "l", , "help message");
+add_positional_argument(cli_module, CHECKOUT_COMMAND, "name", 1, , "help message");
+
+// ...
+}
 
 // command parse
-cli_module_t * cli_module = cli_parse(argc, argv);
+cli_module_t * cli_module = cli_create();
+cli_register_commands(cli_module);
+cli_parse(cli_module, argc, argv);
 
 switch (cli_module->command_type) {
     case CHECKOUT_COMMAND: ...
@@ -109,4 +117,14 @@ string_t
 ```c
 void read_str_from_file(string_t * s, const char* path);
 void write_str_to_file(string_t * s, const char* path);
+```
+
+# 24
+make patch, apply patch
+
+# 25
+sha1 helper function
+```c
+void calc_sha_str(char hash[SHA_LENGHT], const char* data, int len);
+void calc_sha_file(char hash[SHA_LENGHT], const char* path_to_file);
 ```
