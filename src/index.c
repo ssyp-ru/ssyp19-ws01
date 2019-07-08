@@ -137,5 +137,6 @@ enum obj_return_code write_tree(){
     fwrite(str.array, sizeof(char), str.size, f);
     ssyp_string_destroy(&str);
     fclose(f);
+    fs_delete(index_path);
     return OK;
 }
