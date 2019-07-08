@@ -87,6 +87,15 @@ cat-file: -p -t
 # 9 update-index, ls-files, write-tree
 
 # 10 commit-tree
+переменные окружения, которые задаются для коммита
+```
+GIT_AUTHOR_NAME
+GIT_AUTHOR_EMAIL
+GIT_AUTHOR_DATE
+GIT_COMMITER_NAME
+GIT_COMMITER_EMAIL
+GIT_COMMITER_DATE
+```
 
 # 11 read env vars
 нужно уметь читать переменные окружения (через отдельный модуль?)
@@ -129,3 +138,9 @@ void write_str_to_file(string_t * s, const char* path);
 void calc_sha_str(char hash[SHA_LENGHT], const char* data, int len);
 void calc_sha_file(char hash[SHA_LENGHT], const char* path_to_file);
 ```
+
+# 26 gg init
+If not exists, create .gg and .gg/objects folders
+
+# 27 git checkout
+Нужно уметь читать tree object во внутреннюю структуру, искать соответствующие блобы и записывать их в файловую систему
