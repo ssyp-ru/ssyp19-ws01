@@ -46,6 +46,8 @@ typedef struct {
 
 FILE* get_object_type(char sha[20], int do_not_close_file);
 
+char* object_path(char *sha);
+
 enum obj_return_code hash_object(char *path);
 
 enum obj_return_code get_blob_from_storage(char sha[SHA_STRING_LENGTH], string_t * data);

@@ -12,13 +12,22 @@ char hex_chars[16] = "0123456789abcdef";
 // Review: call me when you finish fix review comments. 
 // I want to change this *bad* prefix ssyp_string in entire project
 
-enum obj_return_code get_blob_from_storage(char sha[SHA_STRING_LENGTH], string_t * data){
-    char path[MAX_PATH_LENGTH];
+char* object_path(char *sha){
+    char *path = (char*)malloc(sizeof(char) * MAX_PATH_LENGTH);
     if (get_gg_root_path(path) == -1){
-        return CANT_GET_ROOT_FOLDER;
+        return "";
     }
     strcat(path, "/objects/");
     strcat(path, sha);
+    return path;
+}
+
+
+enum obj_return_code get_blob_from_storage(char sha[SHA_STRING_LENGTH], string_t * data){
+    char *path = object_path(sha);
+    if (strlen(path) == 0){
+        return CANT_GET_ROOT_FOLDER;
+    }
     string_t buf;
     ssyp_string_initialize(&buf, 0);
     if (read_str_from_file(&buf, path) == -1){
@@ -117,12 +126,10 @@ enum obj_return_code save_blob_to_storage(string_t * data, char sha[SHA_STRING_L
     unsigned char sha_buffer[SHA_DIGEST_LENGTH];
     SHA1_Final(sha_buffer, &ctx);
     dec_to_hex(sha_buffer, sha);
-    char path[MAX_PATH_LENGTH];
-    if (get_gg_root_path(path) == -1){
+    char *path = object_path(sha);
+    if (strlen(path) == 0){
         return CANT_GET_ROOT_FOLDER;
     }
-    strcat(path, "/objects/");
-    strcat(path, sha);
     if (is_file(path) == 1){
         return ALREADY_SAVED;
     }

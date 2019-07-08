@@ -7,26 +7,34 @@
 #include "index.h"
 #include <openssl/sha.h>
 
-// Use cli_module. THIS IS A PRIORITY!
+
+char* get_index_path(){
+    char *path = (char*)malloc(sizeof(char) * MAX_PATH_LENGTH);
+    if (get_gg_root_path(path) == -1){
+        return "";
+    }
+    strcat(path, "/index");
+    return path;
+}
+
 
 enum obj_return_code update_index(char *path){
     string_t data;
     ssyp_string_initialize(&data, 0);
     read_str_from_file(&data, path);
-    char sha[SHA_STRING_LENGTH];
-    char index_path[MAX_PATH_LENGTH];
-    if (get_gg_root_path(index_path) == -1){
+    char *index_path = get_index_path();
+    if (strlen(index_path) == 0){
         return CANT_GET_ROOT_FOLDER;
     }
-    char objects_path[MAX_PATH_LENGTH];
-    strcpy(objects_path, index_path);
-    strcat(objects_path, "/objects/");
+    char sha[SHA_STRING_LENGTH];
     enum obj_return_code return_value= save_blob_to_storage(&data, sha);
-    strcat(objects_path, sha);
+    char *objects_path = object_path(sha);
+    if (strlen(objects_path) == 0){
+        return CANT_GET_ROOT_FOLDER;
+    }
     if (return_value == ALREADY_SAVED){
         return ALREADY_SAVED;
     }
-    strcat(index_path, "/index");
     FILE *f = fopen(index_path, "a+");
     if (f == NULL){
         return CANT_OPEN_FILE;
@@ -53,11 +61,10 @@ enum obj_return_code update_index(char *path){
 void ls_files(){
     string_t data;
     ssyp_string_initialize(&data, 0);
-    char path[MAX_PATH_LENGTH];
-    if (get_gg_root_path(path) == -1){
+    char *path = get_index_path();
+    if (strlen(path) == 0){
         return;
     }
-    strcat(path, "/index");
     read_str_from_file(&data, path);
     ssyp_string_print(&data);
 }
@@ -70,11 +77,10 @@ void ls_files(){
 enum obj_return_code write_tree(){
     string_t data;
     ssyp_string_initialize(&data, 0);
-    char index_path[MAX_PATH_LENGTH];
-    if (get_gg_root_path(index_path) == -1){
+    char *index_path = get_index_path();
+    if (strlen(index_path) == 0){
         return CANT_GET_ROOT_FOLDER;
     }
-    strcat(index_path, "/index");
     if (read_str_from_file(&data, index_path) == -1){
         return CANT_OPEN_FILE;
     }
@@ -82,15 +88,22 @@ enum obj_return_code write_tree(){
     string_t str;
     ssyp_string_initialize(&str, data.size);
     char sha[SHA_STRING_LENGTH];
+    char buf[1];
+    string_t null;
+    ssyp_string_initialize(&null, 0);
+    null.array[0] = '\0';
+    null.size++;
     while (iter < data.size){
         ssyp_string_char_cat(&str, "100644 ");
-        strncpy(sha, data.array + iter, SHA_STRING_LENGTH);
-        iter += SHA_STRING_LENGTH + 1;
+        strncpy(sha, data.array + iter, SHA_STRING_LENGTH - 1);
+        sha[SHA_STRING_LENGTH - 1] = '\0';
+        iter += SHA_STRING_LENGTH;
         while (data.array[iter] != '\n'){
-            ssyp_string_char_cat(&str, &data.array[iter]);
+            buf[0] = data.array[iter];
+            ssyp_string_char_cat(&str, buf);
             iter++;
         }
-        ssyp_string_char_cat(&str, "\0");
+        ssyp_string_cat(&str, &null);
         ssyp_string_char_cat(&str, sha);
         iter++;
     }
@@ -108,12 +121,10 @@ enum obj_return_code write_tree(){
     unsigned char sha_buffer[SHA_DIGEST_LENGTH];
     SHA1_Final(sha_buffer, &ctx);
     dec_to_hex(sha_buffer, sha);
-    char objects_path[MAX_PATH_LENGTH];
-    if (get_gg_root_path(objects_path) == -1){
+    char *objects_path = object_path(sha);
+    if (strlen(objects_path) == 0){
         return CANT_GET_ROOT_FOLDER;
     }
-    strcat(objects_path, "/objects/");
-    strcat(objects_path, sha);
     if (is_file(objects_path) == 1){
         return ALREADY_SAVED;
     }
