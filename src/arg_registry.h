@@ -2,8 +2,11 @@
 #define REGISTRY_H_
 
 enum Commands {
-    PUSH,
-    CHECKOUT,
+    UPDATE_INDEX,
+    WRITE_TREE,
+    LS_FILES,
+    CAT_FILE,
+    HASH_OBJ,
     COUNT
 };
 
