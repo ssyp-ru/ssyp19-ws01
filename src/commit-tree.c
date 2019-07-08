@@ -45,7 +45,7 @@ void commit_tree(cli_module_t * cli_module){
     }
     commit_tree_impl(sha, parent, com_mes);
 }
-void commit_tree_impl(char tree_sha[SHA_STRING_LENGTH], char parent[SHA_STRING_LENGTH], char* message){
+char * commit_tree_impl(char tree_sha[SHA_STRING_LENGTH], char parent[SHA_STRING_LENGTH], char* message){
     char *sha = tree_sha;
     char *com_mes = message;
     printf("sha %s, par %s, mes %s\n", sha, parent, com_mes);
@@ -101,7 +101,7 @@ void commit_tree_impl(char tree_sha[SHA_STRING_LENGTH], char parent[SHA_STRING_L
     FILE *f = fopen(path, "w");
     fwrite(pref_file, sizeof(char), len_pref + len_content, f);
     fclose(f);
-
+    return new_sha;
 
 }
 

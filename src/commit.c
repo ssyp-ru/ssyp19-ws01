@@ -13,6 +13,7 @@ enum obj_return_code commit(char *message){
     }
     char head_path[MAX_PATH_LENGTH];
     if (get_gg_root_path(head_path) == -1){
+        fputs("CANT_OPEN_FILE", stderr);
         return CANT_GET_ROOT_FOLDER;
     }
     strcat(head_path, "/refs/heads/");
@@ -26,9 +27,17 @@ enum obj_return_code commit(char *message){
     fclose(f);
     parent_sha[SHA_STRING_LENGTH - 1] = '\0';
     if (len != SHA_STRING_LENGTH - 1){
-        commit_tree_impl(tree_sha, NULL, message);
-        return OK;
+        *parent_sha = NULL;
     }
-    commit_tree_impl(tree_sha, parent_sha, message);
+    char sha[SHA_STRING_LENGTH];
+    strcpy(sha, commit_tree_impl(tree_sha, parent_sha, message));
+    f = fopen(head_path, "w");
+    if (f == NULL){
+        fputs("CANT_OPEN_FILE", stderr);
+        return CANT_OPEN_FILE;
+    }
+    printf("*\n%s\n*\n", sha);
+    fwrite(sha, sizeof(char), SHA_STRING_LENGTH - 1, f);
+    fclose(f);
     return OK;
 }
