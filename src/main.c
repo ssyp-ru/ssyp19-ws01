@@ -1,6 +1,7 @@
 #include "cli.h"
 #include "list.h"
 #include "index.h"
+#include "checkout.h"
 
 
 int main(int argc, char *argv[]){
@@ -27,6 +28,10 @@ int main(int argc, char *argv[]){
         }
         case HASH_OBJ: {
             hash_object(cli_get_argument(cli_module, "filepath"));
+            break;
+        }
+        case CHECKOUT: {
+            checkout(cli_get_argument(cli_module, "sha"));
             break;
         }
     }

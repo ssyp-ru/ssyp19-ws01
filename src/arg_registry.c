@@ -17,4 +17,7 @@ void cli_register_command(cli_module_t *cli_module){
 
     register_command(cli_module, HASH_OBJ, "hash-object", "create gg object");
     add_positional_argument(cli_module, HASH_OBJ, "filepath", 1, "path to file");
+
+    register_command(cli_module, CHECKOUT, "checkout", "checkout to commit");
+    add_positional_argument(cli_module, CHECKOUT, "sha", 1, "sha");
 }

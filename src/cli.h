@@ -14,6 +14,7 @@ enum Commands {
     LS_FILES,
     CAT_FILE,
     HASH_OBJ,
+    CHECKOUT,
     COUNT
 };
 
