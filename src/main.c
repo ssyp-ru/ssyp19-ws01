@@ -41,8 +41,13 @@ int main(int argc, char *argv[]){
             checkout(cli_get_argument(cli_module, "sha"));
             break;
         }
+        case ADD: {
+            update_index(cli_get_argument(cli_module, "filepath"));
+            break;
+        }
         default: {
             fprintf(stderr, "ERROR: unknown command type");
+        }
     }
     return 0;
 }

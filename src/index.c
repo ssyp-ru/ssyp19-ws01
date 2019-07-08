@@ -54,6 +54,7 @@ enum obj_return_code update_index(char *path){
     fputs(path, f);
     fputs("\n", f);
     fclose(f);
+    printf("%s\n", sha);
     return OK;
 }
 

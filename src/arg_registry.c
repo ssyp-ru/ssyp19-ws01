@@ -32,4 +32,7 @@ void cli_register_command(cli_module_t *cli_module){
 
     register_command(cli_module, CHECKOUT, "checkout", "checkout to commit");
     add_positional_argument(cli_module, CHECKOUT, "sha", 1, "sha");
+
+    register_command(cli_module, ADD, "add", "create gg object and index it");
+    add_positional_argument(cli_module, ADD, "filepath", 1, "path to file");
 }

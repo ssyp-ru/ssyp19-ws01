@@ -9,6 +9,7 @@ enum Commands {
     HASH_OBJ,
     COMMIT_TREE,
     CHECKOUT,
+    ADD,
     COUNT
 };
 
