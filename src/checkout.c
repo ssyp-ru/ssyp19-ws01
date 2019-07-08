@@ -35,6 +35,7 @@ enum obj_return_code checkout(char *sha){
             path_iter++;
             iter++;
         }
+        path[path_iter] = '\0';
         iter++;
         strncpy(file_sha, data.array + iter, SHA_STRING_LENGTH - 1);
         if (get_blob_from_storage(file_sha, &file_data) != OK){
