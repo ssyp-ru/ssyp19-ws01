@@ -61,6 +61,9 @@ int rev_parse(const char *refname, char *buf){
     return 1;
 }
 
+// Review: this function should work differently.
+// It get full ref path and fail if second arg is not sha.
+// By the way, this is in man. And you can run git update-ref to check
 int rev_update(const char *refname, const char *str){
     char path_to_ref[MAX_PATH_LENGTH];
     if(find_ref_file(refname, path_to_ref) == 0){

@@ -1,9 +1,13 @@
 #ifndef FS_H_
 #define FS_H_
 
+// Review: why there is two defines (in c AND h files)?
 #define MAX_PATH_LENGTH 1024
 #define BUF_SIZE 1024
+// Review: why /.gg ??? Are you create gg folder in root folder?
 #define GG_DIR_NAME "/.gg"
+
+// Review: dont really like "file_" prefix. Make fs_copy ... 
 
 int file_copy(const char *path_from, const char *path_to);
 
