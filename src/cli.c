@@ -1,3 +1,4 @@
+// Review: WTF?
 #ifndef CLI_C_
 #define CLI_C_
 #include <stdio.h>
@@ -53,7 +54,9 @@ void cli_parse(cli_module_t *cli_module, int argc, char **argv){
     for (int ind = 2; ind < argc; ind++){
         string_t name_flag;
         if (strncmp(argv[ind], "--", 2) == 0) {
+            // Review: argv[ind] + 2
             ssyp_string_initialize_with_string(&name_flag, &argv[ind][2]);
+            // Review: argv[ind][0] == '-'
         } else if (strncmp(argv[ind], "-", 1) == 0){
             ssyp_string_initialize_with_string(&name_flag, &argv[ind][1]);
         } else {
@@ -93,6 +96,7 @@ void add_positional_argument(cli_module_t *cli_module,
                              enum Commands num_command, 
                              char *name, int pos, 
                              char *help_message){
+    // Review: what the point in this variables?
     string_t s_name;
     string_t help;
     ssyp_string_initialize_with_string(&s_name, name);
@@ -101,6 +105,7 @@ void add_positional_argument(cli_module_t *cli_module,
         printf("Command not found");
         return;
     }
+    // Review: make flag_initialize
     flag_t *flag = (flag_t*)malloc(sizeof(flag_t));
     ssyp_string_initialize(&flag->long_name_flag, 1);
     ssyp_string_initialize(&flag->short_name_flag, 1);

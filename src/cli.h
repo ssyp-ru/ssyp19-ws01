@@ -1,6 +1,7 @@
 #ifndef FLAG_LIST_H_
 #define FLAG_LIST_H_
 
+// Review: dont need most header here
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,9 +16,11 @@ enum Commands {
 
 struct node;
 
+// Review: argument_t
 typedef struct flag {
     int pos;
     string_t long_name_flag;
+    // Review: short name is 1 symbol. So char would be enougth.
     string_t short_name_flag;
     string_t help_message;
     int have_arg;
@@ -26,9 +29,12 @@ typedef struct flag {
 
 
 typedef struct {
+    // Review: what is this?
     int size;
+    // Review: just name
     string_t name_command;
     string_t help_message;
+    // Review: why you need this?
     int num_command;
     struct node *command_arguments;
 } command_t;
@@ -37,7 +43,9 @@ typedef struct {
 typedef struct {
     int num_command; 
     command_t *command_list[COUNT];
+    // Review: user_argument_size
     int size_user_arg;
+    // Review: magic constant.
     flag_t *user_argument[100];
 } cli_module_t;
 
@@ -60,4 +68,5 @@ void add_named_argument(cli_module_t *cli_module, enum Commands num_command, cha
 void register_command(cli_module_t *cli_module, enum Commands num_command, char *name_command, char *help_message);
 
 cli_module_t *cli_create();
+// Review: cli_destroy?
 #endif

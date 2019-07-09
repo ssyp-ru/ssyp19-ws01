@@ -1,5 +1,6 @@
 #ifndef LIST_H_
 #define LIST_H_
+// Review: do you need this?
 #include <stdio.h>
 #include <stdlib.h>
 #include "cli.h"
@@ -7,6 +8,7 @@
 
 struct flag;
 
+// Review: flag_list_t
 typedef struct node {
     struct flag *value;
     struct node *prev, *next;
