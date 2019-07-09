@@ -8,4 +8,4 @@ run: string_test
 	./test_string
 
 clean:
-	rm -f test_string output.txt
+	rm -f test_string output.txt *.o main 

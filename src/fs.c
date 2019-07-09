@@ -5,8 +5,10 @@
 #include <sys/types.h>
 #include "string_t.h"
 #include <string.h>
+
 #define MAX_PATH_LENGTH 1024
 #define BUF_SIZE 1024
+#define GG_DIR_NAME "/.gg"
 
 int file_copy(const char *path_from, const char *path_to){
     if(access(path_to, F_OK) == 0 || access(path_from, R_OK) != 0){
@@ -22,6 +24,32 @@ int file_copy(const char *path_from, const char *path_to){
     }
     fclose(file_to);
     fclose(file_from);
+    return 1; //success 
+}
+
+int file_read_to_string(const char *path_from, char *str){
+    if(access(path_from, R_OK) != 0){
+        return 0; //fail
+    }
+    FILE *file_from = fopen(path_from, "r");
+    int index = 0;
+    int used_size = BUF_SIZE;
+    while(used_size >= BUF_SIZE){
+        used_size = fread(&str[index], sizeof(char), BUF_SIZE, file_from);
+        index += used_size;
+    }
+    str[index] = 0;
+    fclose(file_from);
+    return 1; //success 
+}
+
+int file_write_from_string(const char *path_to, const char *str){
+    if(access(path_to, W_OK) != 0){
+        return 0; //fail
+    }
+    FILE *file_to = fopen(path_to, "w");
+    fwrite(str, sizeof(char), strlen(str), file_to);
+    fclose(file_to);
     return 1; //success 
 }
 
@@ -76,7 +104,7 @@ int get_gg_root_path(char *buf){
         return -1;
     }
     while(strcmp("", buf) != 0){
-        strcat(buf, "/.gg");        
+        strcat(buf, GG_DIR_NAME);        
         if(is_directory(buf) == 1){
             return 1;
         }
