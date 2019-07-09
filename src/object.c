@@ -11,11 +11,15 @@ int get_blob_from_storage(char sha[SHA_DIGEST_LENGTH], string_t * data){
     string_t buf;
     ssyp_string_initialize(&buf, 1);
     if (read_str_from_file(&buf, sha) == -1){
+        // Review: Then magic constant is true or false (1 or 0) it's ok.
+        // But that ta hell is -1 and -2. Make enum if you want to return code.
         return -2;
     }
     if (strncmp(buf.array, "blob ", 5)){
+        // Review: If were are here - it's a programmer error. Print it to stderr.
         return -1;
     }
+    // Review: Maybe from 5?
     int iter = 0;
     while (buf.array[iter] != 0){
         iter++;
@@ -24,6 +28,7 @@ int get_blob_from_storage(char sha[SHA_DIGEST_LENGTH], string_t * data){
     ssyp_string_reserve(data, len - iter);
     data->size = 0;
     for (int i = iter + 1; i < len; i++){
+        // Review: strcpy?
         data->array[i - iter - 1] = buf.array[i];
         data->size++;
     }
@@ -32,11 +37,13 @@ int get_blob_from_storage(char sha[SHA_DIGEST_LENGTH], string_t * data){
 }
 
 
+// Review: Not path, sha.
 int cat_file(char *path){
     string_t str;
     ssyp_string_initialize(&str, 1);
     if (strlen(path) == SHA_DIGEST_LENGTH){
         int res = get_blob_from_storage(path, &str);
+        // Review: magic constants
         if (res == -2){
             return -1;
         } else if (res >= 0){
@@ -44,6 +51,7 @@ int cat_file(char *path){
             return 0;
         }
     }
+    // Review: Do we need this?
     if (read_str_from_file(&str, path) == -1){
         return -1;
     }
@@ -57,6 +65,7 @@ char* itoa (int numb, char *ans){
     char buf[10];
     int len = 0;
     while (numb > 0){
+        // Review: 48????
         buf[len] = numb % 10 + 48;
         numb /= 10;
         len++;
@@ -75,6 +84,7 @@ void dec_to_hex (unsigned char sha[SHA_DIGEST_LENGTH], char sha_result[SHA_STRIN
         unsigned char n = sha[i];
         second = hex_chars[n % 16];
         n /= 16;
+        // Review: dont need % here
         first = hex_chars[n % 16];
         sha_result[i * 2] = first;
         sha_result[i * 2 + 1] = second;
@@ -89,6 +99,7 @@ void save_blob_to_storage(string_t * data, char sha[SHA_STRING_LENGTH]){
     char numb[10], blob[15] = "blob ";
     strcpy(ans.array, strcat(blob, itoa(data->size, numb)));
     ans.size = strlen(ans.array) + 1;
+    // Review: unnessesary copy. You may write to file ans.array and then data.
     ssyp_string_cat(&ans, data);
     SHA_CTX ctx; 
     SHA1_Init(&ctx);
