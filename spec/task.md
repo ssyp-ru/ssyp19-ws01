@@ -38,8 +38,10 @@ switch (cli_module->command_type) {
 }
 
 ```
+# 2.1
+Сделать вывод --help
 
-# 3
+# (Done) 3
 Модуль тестирования. Нужно научится запускать программы, запихивать туда stdin и принwrite-treeимать его stdout. Сравнивать с ожидаемым.
 ```c
 test_bin_t * test_case = create_test_case("programm_name");
@@ -49,8 +51,6 @@ test_case->env_var({"", "", ...});
 test_case->expect_code(0);
 test_case->expect_stdout("")
 ```
-# 3.1
-Сделать вывод --help
 
 # 4
 ini file parser
@@ -59,7 +59,13 @@ ini file parser
 gitignore
 
 # 6
-rev-parse, rev-update, rev-list
+rev-parse, rev-update
+
+#6.1
+rev-list
+
+#6.2
+HEAD~2 syntax
 
 # 7
 filelock
@@ -109,7 +115,7 @@ commit --amend
 # 22
 config
 
-# 23
+# (Done) 23
 string_t
 
 основные str функции + 

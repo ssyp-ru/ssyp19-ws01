@@ -1,12 +1,20 @@
 CC=gcc
-CFLAGS=-g
+CFLAGS=-g -Wall -Wpedantic
 
-string_t.o: string_t.c string_t.h
-	$(CC) $(CFLAGS) string_t.c -c
+SOURCES := $(wildcard *.c)
+HEADERS := $(wildcard *.h)
+OBJECTS := $(patsubst %.c, %.o, $(SOURCES))
+
+gg: $(OBJECTS)
+	$(CC) $(CFLAGS) $^ -o gg
+
+%.o: %.c $(HEADERS)
+	$(CC) $(CFLAGS) -c $<
 
 unit_test: string_t.o
 	make -C test run
+	make -C test clean
 
 clean:
-	rm *.o
-	make -C test clean
+	rm -f *.o
+	make --no-print-directory -C test clean
