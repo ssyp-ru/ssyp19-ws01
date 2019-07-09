@@ -62,18 +62,3 @@ int get_gg_root_path(char *buf){
 }
 
 */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
