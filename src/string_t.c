@@ -18,6 +18,14 @@ void ssyp_string_reserve (string_t *str, int new_size){
 }
 
 
+void ssyp_string_print (string_t *str){
+    for (int i = 0; i < str->size; i++){
+        printf("%c", str->array[i]);
+    }
+    printf("\n");
+}
+
+
 void ssyp_string_char_cat (string_t *str, char *array){
     if (str == NULL || array == NULL){
         return;
@@ -102,9 +110,9 @@ void ssyp_string_cat (string_t *s1, string_t *s2){
 
 
 void ssyp_string_initialize (string_t *str, int init_size){
-    str->array = (char*)malloc(sizeof(char) * init_size);
+    str->array = (char*)malloc(sizeof(char) * (init_size + 1));
     str->size = 0;
-    str->capacity = init_size;
+    str->capacity = init_size + 1;
 }
 
 
