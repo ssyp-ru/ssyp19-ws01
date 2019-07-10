@@ -1,9 +1,10 @@
 #ifndef OBJECT_H_
 #define OBJECT_H_
-
+#include <openssl/sha.h>
 #include "string_t.h"
 
 #define MAX_PARENT_COUNT 10
+#define SHA_STRING_LENGTH (SHA_DIGEST_LENGTH * 2 + 1)
 
 enum object_type {
     BLOB,
@@ -34,8 +35,10 @@ typedef struct {
 
 FILE* get_object_type(char sha[20], int do_not_close_file);
 
-void get_blob_from_storage(char sha[20], string_t * data);
-void save_blob_to_storage(string_t * data, char sha[20]);
+int get_blob_from_storage(char sha[SHA_STRING_LENGTH], string_t * data);
+void save_blob_to_storage(string_t * data, char sha[SHA_STRING_LENGTH]);
+
+int cat_file(char *path);
 
 // void get_tree_from_storage(char sha[20], vector_tree_t * tree_object);
 // void set_tree_to_storage(vector_tree_t * tree_object, char sha[20]);
