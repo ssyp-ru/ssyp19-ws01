@@ -15,6 +15,12 @@
 // ps. git show 971793d57e39ede64578a67101005d31e2b96bbe
 // After you fix them there will be another round of review.
 
+
+// Review: (update)
+// Hmm. You also did not add your test file to commit. 
+// So I not only can't make tests, but also repo not compiled.
+// Prepare your arms.
+
 char *cli_get_argument(cli_module_t *cli_module, char *flag_name){
     string_t name;
     ssyp_string_initialize_with_string(&name, flag_name);
