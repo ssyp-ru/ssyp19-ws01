@@ -7,7 +7,7 @@
 void sub_init(char *path, const char *folder){
     //str_del_prelast_slash(strcat(path, "/"));
     strcat(path, folder);
-    file_mkdir(path);
+    fs_mkdir(path);
     str_del_prelast_slash(strcat(path, "/"));
 }
 
@@ -20,7 +20,7 @@ int init(){
     if(is_directory(buf) == 1){
         return 0;
     }
-    file_mkdir(buf);
+    fs_mkdir(buf);
     sub_init(buf, "/objects");
     return 1;
 }
