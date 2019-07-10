@@ -5,12 +5,9 @@
 #include <sys/types.h>
 #include "string_t.h"
 #include <string.h>
+#include "fs.h"
 
-#define MAX_PATH_LENGTH 1024
-#define BUF_SIZE 1024
-#define GG_DIR_NAME "/.gg"
-
-int file_copy(const char *path_from, const char *path_to){
+int fs_copy(const char *path_from, const char *path_to){
     if(access(path_to, F_OK) == 0 || access(path_from, R_OK) != 0){
         return 0; //fail
     }
@@ -27,7 +24,7 @@ int file_copy(const char *path_from, const char *path_to){
     return 1; //success 
 }
 
-int file_read_to_string(const char *path_from, char *str){
+int fs_read_to_string(const char *path_from, char *str){
     if(access(path_from, R_OK) != 0){
         return 0; //fail
     }
@@ -43,7 +40,7 @@ int file_read_to_string(const char *path_from, char *str){
     return 1; //success 
 }
 
-int file_write_from_string(const char *path_to, const char *str){
+int fs_write_from_string(const char *path_to, const char *str){
     if(access(path_to, W_OK) != 0){
         return 0; //fail
     }
@@ -71,15 +68,15 @@ int str_del_prelast_slash(char *string){
 }
 
 
-int file_delete(const char *path){
+int fs_delete(const char *path){
     return remove(path) == 0;
 }
 
-int file_mkdir(const char *path){
+int fs_mkdir(const char *path){
     return mkdir(path, 0744) == 0;
 }
 
-int file_move(const char *path_from, const char *path_to){
+int fs_move(const char *path_from, const char *path_to){
     return rename(path_from, path_to) == 0;
 }
 
@@ -91,7 +88,7 @@ int is_file(const char *path){
     return (sb.st_mode & S_IFMT) == S_IFREG;
 }
 
-int is_directory(char *path){
+int is_directory(const char *path){
     struct stat sb;
     if (stat(path, &sb) == -1){
         return -1;
@@ -104,7 +101,7 @@ int get_gg_root_path(char *buf){
         return -1;
     }
     while(strcmp("", buf) != 0){
-        strcat(buf, GG_DIR_NAME);        
+        strcat(buf, _GG_DIR_NAME);        
         if(is_directory(buf) == 1){
             return 1;
         }

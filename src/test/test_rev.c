@@ -11,19 +11,20 @@
 // and test ALL your function and use cases. This is that tests is.
 
 int main(){
-    int res;
-    if (res = is_directory(".gg")) {
+    /*int res;
+    if (1 == is_directory(".gg")) {
         printf("%d\n", res);
         test_fail("Please, do not run tests in folder where .gg exists.\nThis test will corrupt it");
         return 1;
     }
-    assert(file_mkdir(".gg"));
-    assert(is_directory(".gg"));
+    assert(fs_mkdir(".gg"));*/
+    //assert(is_directory(".gg"));
     char buf[40];
-    assert(!rev_parse("test228", buf));
-    // Review: should 
+    assert(rev_parse("test228", buf));
+    // Review: 
+    // should 
     char new_sha[] = "17d5802036e48aa0f9ddc26988755f96739e903c";
-    assert(rev_update("test228", new_sha));
+    assert(rev_update("test228", new_sha, ""));
     assert(rev_parse("test228", buf));
     assert(strcmp(new_sha, buf) == 0);
     test_ok();

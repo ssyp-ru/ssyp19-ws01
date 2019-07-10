@@ -57,18 +57,20 @@ int rev_parse(const char *refname, char *buf){
     if(find_ref_file(refname, path_to_ref) == 0){
         return 0;
     }
-    file_read_to_string(path_to_ref, buf);
+    fs_read_to_string(path_to_ref, buf);
     return 1;
 }
 
-// Review: this function should work differently.
-// It get full ref path and fail if second arg is not sha.
-// By the way, this is in man. And you can run git update-ref to check
-int rev_update(const char *refname, const char *str){
+int rev_update(const char *refname, const char *newvalue, const char *oldvalue){
     char path_to_ref[MAX_PATH_LENGTH];
     if(find_ref_file(refname, path_to_ref) == 0){
         return 0;
     }
-    file_write_from_string(path_to_ref, str);
-    return 1;
+    char buf[BUF_SIZE];
+    rev_parse(refname, buf);
+    if(strcmp(oldvalue, buf) == 0 || strcmp(oldvalue, "") == 0){
+        fs_write_from_string(path_to_ref, newvalue);
+        return 1;
+    }
+    return 0;
 }
