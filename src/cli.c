@@ -6,6 +6,14 @@
 #include "string_t.h"
 #include <string.h>
 
+// Review:
+// So...
+// You just deleted my comments without solving it...
+// M'kay...
+// ...
+
+// ps. git show 971793d57e39ede64578a67101005d31e2b96bbe
+// After you fix them there will be another round of review.
 
 char *cli_get_argument(cli_module_t *cli_module, char *flag_name){
     string_t name;
