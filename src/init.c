@@ -16,7 +16,7 @@ int init(){
     if(getcwd(buf, MAX_PATH_LENGTH) == NULL){
         return 0;
     }
-    strcat(buf, GG_DIR_NAME);
+    strcat(buf, _GG_DIR_NAME);
     if(is_directory(buf) == 1){
         return 0;
     }

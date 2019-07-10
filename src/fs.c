@@ -40,6 +40,15 @@ int fs_read_to_string(const char *path_from, char *str){
     return 1; //success 
 }
 
+int fs_make_file(const char *path){
+    FILE *file = fopen(path, "w");
+    if(file == NULL){
+        return 0;
+    }
+    fclose(file);
+    return 1;
+}
+
 int fs_write_from_string(const char *path_to, const char *str){
     if(access(path_to, W_OK) != 0){
         return 0; //fail

@@ -27,4 +27,6 @@ int fs_read_to_string(const char *path_from, char *str);
 
 int fs_write_from_string(const char *path_to, const char *str);
 
+int fs_make_file(const char *path);
+
 #endif

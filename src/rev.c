@@ -63,9 +63,16 @@ int rev_parse(const char *refname, char *buf){
 
 int rev_update(const char *refname, const char *newvalue, const char *oldvalue){
     char path_to_ref[MAX_PATH_LENGTH];
+    if(find_ref_file(refname, path_to_ref) == 0 && strcmp(oldvalue, "") == 0){  
+        get_gg_root_path(path_to_ref);
+        strcat(strcat(path_to_ref, "/"), refname);
+        fs_make_file(path_to_ref);
+        fs_write_from_string(path_to_ref, newvalue);
+        return 1;
+    }
     if(find_ref_file(refname, path_to_ref) == 0){
         return 0;
-    }
+    }  
     char buf[BUF_SIZE];
     rev_parse(refname, buf);
     if(strcmp(oldvalue, buf) == 0 || strcmp(oldvalue, "") == 0){
