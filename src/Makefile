@@ -1,12 +1,13 @@
 CC=gcc
 CFLAGS=-g -Wall -Wpedantic
+LFLAGS=-lcrypto
 
 SOURCES := $(wildcard *.c)
 HEADERS := $(wildcard *.h)
 OBJECTS := $(patsubst %.c, %.o, $(SOURCES))
 
 gg: $(OBJECTS)
-	$(CC) $(CFLAGS) $^ -o gg
+	$(CC) $(CFLAGS) $^ -o gg $(LFLAGS)
 
 %.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $<
