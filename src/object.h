@@ -7,12 +7,22 @@
 #define MAX_PARENT_COUNT 10
 #define SHA_STRING_LENGTH (SHA_DIGEST_LENGTH * 2 + 1)
 
+
+// Review: well, I guess I dont need to review 8_hash_object ...
+
 enum object_type {
     BLOB,
     TREE,
     COMMIT
 };
 
+// Review: better make one enum with all kind of errors
+// something like
+// enum obj_return_code {
+//      OK,
+//      CANT_GET_ROOT_FOLDER,
+//      ...
+//};
 enum get_blob_error_code {
     READ_ERROR,
     NOT_BLOB,

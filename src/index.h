@@ -1,5 +1,6 @@
 #ifndef INDEX_H_
 #define INDEX_H_
+// Review: do you need all this headers here? (you should have only headers you need for this file)
 #include <stdio.h>
 #include "string_t.h"
 #include "fs.h"
