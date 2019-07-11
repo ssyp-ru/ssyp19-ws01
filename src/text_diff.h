@@ -15,9 +15,9 @@ typedef struct{
     int diff_type;
 }diff_t;
 
-diff_t **diff_find(const char **s1, const int len1, const char **s2, const int len2, int *num_of_diffs);
+diff_t **diff_find(char **s1, int len1, char **s2, int len2, int *num_of_diffs);
 
 diff_t **file_diff(const char *path1, const char *path2, int *num_of_diffs);
 
-int diff_print(const char **s1, const char **s2, diff_t **diffs, int n);
+int diff_print(char **s1, char **s2, diff_t **diffs, int n);
 #endif
