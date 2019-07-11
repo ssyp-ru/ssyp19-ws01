@@ -129,3 +129,9 @@ void write_str_to_file(string_t * s, const char* path);
 void calc_sha_str(char hash[SHA_LENGHT], const char* data, int len);
 void calc_sha_file(char hash[SHA_LENGHT], const char* path_to_file);
 ```
+
+# 26 gg init
+If not exists, create .gg and .gg/objects folders
+
+# 27 git checkout
+Нужно уметь читать tree object во внутреннюю структуру, искать соответствующие блобы и записывать их в файловую систему
