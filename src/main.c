@@ -1,6 +1,7 @@
 #include "cli.h"
 #include "list.h"
 #include "index.h"
+#include "commit-tree.h"
 
 int main(int argc, char *argv[]){
     cli_module_t *cli_module = cli_create();
@@ -29,6 +30,13 @@ int main(int argc, char *argv[]){
         case HASH_OBJ: {
             hash_object(cli_get_argument(cli_module, "filepath"));
             break;
+        }
+        case COMMIT_TREE: {
+            commit_tree(cli_module);
+            break;
+        }
+        default: {
+            fprintf(stderr, "ERROR: unknown command type");
         }
     }
     return 0;

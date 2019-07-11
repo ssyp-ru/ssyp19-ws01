@@ -7,6 +7,7 @@ enum Commands {
     LS_FILES,
     CAT_FILE,
     HASH_OBJ,
+    COMMIT_TREE,
     COUNT
 };
 
