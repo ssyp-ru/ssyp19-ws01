@@ -87,6 +87,15 @@ cat-file: -p -t
 # 9 update-index, ls-files, write-tree
 
 # 10 commit-tree
+переменные окружения, которые задаются для коммита
+```
+GIT_AUTHOR_NAME
+GIT_AUTHOR_EMAIL
+GIT_AUTHOR_DATE
+GIT_COMMITER_NAME
+GIT_COMMITER_EMAIL
+GIT_COMMITER_DATE
+```
 
 # 11 read env vars
 нужно уметь читать переменные окружения (через отдельный модуль?)
