@@ -17,6 +17,31 @@ static int min(int first, int second, int third){
     return 0;
 }
 
+int diff_print(const char **s1, const char **s2, diff_t **diffs, int n){
+    for(int i = 0; i < n; i++){
+        switch(diffs[i]->diff_type){
+            case ADD:
+                for(int k = diffs[i]->s2_from; k < diffs[i]->s2_from + diffs[i]->s2_len; k++){
+                    printf("+%s\n", s2[k]);
+                }
+                break;
+            case DELETE:
+                for(int k = diffs[i]->s1_from; k < diffs[i]->s1_from + diffs[i]->s1_len; k++){
+                    printf("-%s\n", s1[k]);
+                }
+                break;
+            case CHANGE:
+                for(int k = diffs[i]->s1_from; k < diffs[i]->s1_from + diffs[i]->s1_len; k++){
+                    printf("-%s\n", s1[k]);
+                }
+                for(int k = diffs[i]->s2_from; diffs[i]->s2_from + diffs[i]->s2_len; k++){
+                    printf("+%s\n", s2[k]);
+                }
+                break;
+        }
+    }
+}
+
 static diff_t **way_back(int **buf, const int len1, const int len2, diff_t **res, int *length){
     int k = len1 - 1;
     int i = len2 - 1;
