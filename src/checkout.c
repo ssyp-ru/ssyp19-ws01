@@ -40,6 +40,8 @@ enum obj_return_code checkout(char *sha){
         if (get_blob_from_storage(file_sha, &file_data) != OK){
             return CANT_OPEN_FILE;
         }
+        // Review: lol...
+        // Explain to me how it work
         FILE *f = fopen(path, "w");
         if (f == NULL){
             return CANT_OPEN_FILE;
