@@ -4,7 +4,8 @@
 enum diff_types{
     ADD,
     DELETE,
-    CHANGE
+    CHANGE,
+    NOT_CHANGE
 };
 
 typedef struct{
