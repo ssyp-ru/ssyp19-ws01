@@ -3,11 +3,14 @@
 #include "index.h"
 #include "commit-tree.h"
 #include "checkout.h"
+#include "config.h"
 
 
 int main(int argc, char *argv[]){
     cli_module_t *cli_module = cli_create();
     cli_register_command(cli_module);
+    config_initialize();
+
     if (cli_parse(cli_module, argc, argv) == 0) {
         fprintf(stderr, "Argument parse error, abort.\n");
     }
@@ -41,8 +44,20 @@ int main(int argc, char *argv[]){
             checkout(cli_get_argument(cli_module, "sha"));
             break;
         }
+        case CONFIG: {
+            char* name = cli_get_argument(cli_module, "name");
+            char* email = cli_get_argument(cli_module, "email");
+            if (name) {
+                config_set_name(name);
+            }
+            if (email) {
+                config_set_email(email);
+            }
+            break;
+        }
         default: {
             fprintf(stderr, "ERROR: unknown command type");
+        }
     }
     return 0;
 }

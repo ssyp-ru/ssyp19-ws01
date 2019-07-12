@@ -32,4 +32,9 @@ void cli_register_command(cli_module_t *cli_module){
 
     register_command(cli_module, CHECKOUT, "checkout", "checkout to commit");
     add_positional_argument(cli_module, CHECKOUT, "sha", 1, "sha");
+
+
+    register_command(cli_module, CONFIG, "config", "config utility");
+    add_named_argument(cli_module, CONFIG, "name", "n", "your name", 1);
+    add_named_argument(cli_module, CONFIG, "email", "m", "your email", 1);
 }
