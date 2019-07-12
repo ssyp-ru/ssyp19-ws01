@@ -8,7 +8,17 @@ void sub_init(char *path, const char *folder){
     //str_del_prelast_slash(strcat(path, "/"));
     strcat(path, folder);
     fs_mkdir(path);
+    if(strcmp(folder, "/refs") == 0){
+        //strcat(path, folder);
+        //fs_mkdir(path);
+        sub_init(path, "/heads");
+    }
+    if(strcmp(folder, "/heads") == 0){
+        fs_make_file(strcat(path, "/branch"));
+       // str_del_prelast_slash(strcat(path, "/"));
+    }
     str_del_prelast_slash(strcat(path, "/"));
+    
 }
 
 int init(){
@@ -22,6 +32,8 @@ int init(){
     }
     fs_mkdir(buf);
     sub_init(buf, "/objects");
+    sub_init(buf, "/refs");
+    
     return 1;
 }
 

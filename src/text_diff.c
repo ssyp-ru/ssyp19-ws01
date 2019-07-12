@@ -25,7 +25,7 @@ static int min(int first, int second, int third){
 int diff_print(char **s1, char **s2, diff_t **diffs, int n){
     for(int i = n - 1; i >= 0; i--){
         switch(diffs[i]->diff_type){
-            case ADD:
+            case DIFF_ADD:
                 for(int k = diffs[i]->s2_from; k < diffs[i]->s2_from + diffs[i]->s2_len; k++){
                     printf("+%s\n", s2[k]);
                 }
@@ -84,13 +84,13 @@ static diff_t **way_back(int **buf, int len1, int len2, diff_t **res, int *lengt
             continue;
         }
         if(k == 0){
-            if(way == ADD){
+            if(way == DIFF_ADD){
                res[index]->s2_len++;
                res[index]->s2_from--;
             }else{
                 index++;
-                res[index] = create_diff(k, 0, i - 1, 1, ADD);
-                way = ADD;
+                res[index] = create_diff(k, 0, i - 1, 1, DIFF_ADD);
+                way = DIFF_ADD;
             }
             i--;
             continue;
@@ -108,13 +108,13 @@ static diff_t **way_back(int **buf, int len1, int len2, diff_t **res, int *lengt
             continue;
         }
         if (buf[k][i - 1] == min(buf[k - 1][i], buf[k][i - 1], buf[k - 1][i - 1])){
-            if(way == ADD){
+            if(way == DIFF_ADD){
                res[index]->s2_len++;
                res[index]->s2_from--;
             }else{
                 index++;
-                res[index] = create_diff(k - 1, 0, i - 1, 1, ADD);
-                way = ADD;
+                res[index] = create_diff(k - 1, 0, i - 1, 1, DIFF_ADD);
+                way = DIFF_ADD;
             }
             i--;
             continue;
@@ -262,7 +262,8 @@ diff_t **file_diff(const char *path1, const char *path2, int *num_of_diffs){
     return d;
 }
 
-void diff(const char *path1, char *s2, int *num_of_diffs){
+void diff(){
+    int num_of_diffs = 0;
     string_t *buf = (string_t * )malloc(sizeof(string_t));
     char ** string1 = allocate_string_matrix(BUF_SIZE);
     char ** string2 = allocate_string_matrix(BUF_SIZE);
@@ -276,10 +277,10 @@ void diff(const char *path1, char *s2, int *num_of_diffs){
         indexStr[SHA_STRING_LENGTH - 1] = 0;
         get_blob_from_storage(indexStr, buf);
         strncpy(buf_char, buf->array, buf->size);
-        split_file_content(path1, string1, &len1);
+        split_file_content(&indexStr[SHA_STRING_LENGTH], string1, &len1);
         split_content(buf_char, string2, &len2);
-        diff_t ** d = diff_find(string1, len1, string2, len2, num_of_diffs);
-        diff_print(string1, string2, d, *num_of_diffs);
+        diff_t ** d = diff_find(string1, len1, string2, len2, &num_of_diffs);
+        diff_print(string1, string2, d, num_of_diffs);
     }
 
 }
