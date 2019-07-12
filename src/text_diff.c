@@ -187,7 +187,7 @@ diff_t **diff_find(char **s1, int len1, char **s2, int len2, int *num_of_diffs){
 
 
 
-void split__content(char *file, char **string, int *size) {
+void split_content(char *file, char **string, int *size) {
     int i = 0;
     int len = 0;
     //string[0] = file;
@@ -259,22 +259,27 @@ diff_t **file_diff(const char *path1, const char *path2, int *num_of_diffs){
     split_file_content(path2, string2, &len2);
     diff_t ** d = diff_find(string1, len1, string2, len2, num_of_diffs);
     diff_print(string1, string2, d, *num_of_diffs);
-    //strings[0] = string1;
-    //strings[1] = string2;
     return d;
 }
 
 void diff(const char *path1, char *s2, int *num_of_diffs){
-    index
+    string_t *buf = (string_t * )malloc(sizeof(string_t));
     char ** string1 = allocate_string_matrix(BUF_SIZE);
     char ** string2 = allocate_string_matrix(BUF_SIZE);
-    char *buf[MAX_PATH_LENGTH + SHA_STRING_LENGTH + 1]; //aeeeeee nice constants
-    while(fgets())
-    int len1 = 1;
-    int len2 = 1;
-    
-    split_file_content(path1, string1, &len1);
-    split_content(, string2, &len2);
-    diff_t ** d = diff_find(string1, len1, string2, len2, num_of_diffs);
-    diff_print(string1, string2, d, *num_of_diffs);
+    char indexStr[MAX_PATH_LENGTH + SHA_STRING_LENGTH + 1]; //aeeeeee nice constants
+    FILE *index = fopen(get_index_path(), "r");
+    char buf_char[BUF_SIZE];
+    while(fgets(indexStr, MAX_PATH_LENGTH + SHA_STRING_LENGTH + 1, index) != NULL){
+        printf("========================================================\n");
+        int len1 = 1;
+        int len2 = 1;
+        indexStr[SHA_STRING_LENGTH - 1] = 0;
+        get_blob_from_storage(indexStr, buf);
+        strncpy(buf_char, buf->array, buf->size);
+        split_file_content(path1, string1, &len1);
+        split_content(buf_char, string2, &len2);
+        diff_t ** d = diff_find(string1, len1, string2, len2, num_of_diffs);
+        diff_print(string1, string2, d, *num_of_diffs);
+    }
+
 }

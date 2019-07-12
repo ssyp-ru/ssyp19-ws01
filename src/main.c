@@ -1,5 +1,12 @@
 #include "text_diff.h"
 #include <stdio.h>
+#include "cli.h"
+#include "list.h"
+#include "index.h"
+#include "commit-tree.h"
+#include "checkout.h"
+#include "config.h"
+#include "commit.h"
 
 int printim(diff_t **diffs, int num){
     for(int i = num - 1; i >= 0; i--){
@@ -8,32 +15,68 @@ int printim(diff_t **diffs, int num){
 }
 }
 
-int main(){
-    char *s1[9];
-    s1[0] = "i";
-    s1[1] = "n"; 
-    s1[2] = "t";
-    s1[3] = "e";
-    s1[4] = "n";
-    s1[5] = "t";
-    s1[6] = "i";
-    s1[7] = "o";
-    s1[8] = "n";
-    char *s2[9];
-    s2[0] = "e";
-    s2[1] = "x";
-    s2[2] = "e";
-    s2[3] = "c";
-    s2[4] = "u";
-    s2[5] = "t";
-    s2[6] = "i";
-    s2[7] = "o";
-    s2[8] = "n";
-    int a;
-    char **strings[2];
-    diff_t **res = file_diff("file1.txt", "file2.txt", &a, strings);//diff_find(s1, 9, s2, 9, &a);
-    //diff_print(strings[0], strings[1], res, a);
-    printf("\n");
-    printim(res, a);
+
+int main(int argc, char *argv[]){
+    cli_module_t *cli_module = cli_create();
+    cli_register_command(cli_module);
+    config_initialize();
+
+    if (cli_parse(cli_module, argc, argv) == 0) {
+        fprintf(stderr, "Argument parse error, abort.\n");
+    }
+    switch (cli_module->num_command){
+        case COMMIT_TREE: {
+            commit_tree(cli_module);
+            break;
+        }
+        case COMMIT: {
+            commit(cli_get_argument(cli_module, "message"));
+            break;
+        }
+        case UPDATE_INDEX: {
+            update_index(cli_get_argument(cli_module, "filepath"));
+            // here call for hash_object function
+            break;
+        }
+        case LS_FILES: {
+            ls_files();
+            break;
+        }
+        case WRITE_TREE: {
+            char sha[SHA_STRING_LENGTH];
+            write_tree(sha);
+            break;
+        }
+        case CAT_FILE: {
+            cat_file(cli_get_argument(cli_module, "sha"));
+            break;
+        }
+        case HASH_OBJ: {
+            hash_object(cli_get_argument(cli_module, "filepath"));
+            break;
+        }
+        case CHECKOUT: {
+            checkout(cli_get_argument(cli_module, "sha"));
+            break;
+        }
+        case CONFIG: {
+            char* name = cli_get_argument(cli_module, "name");
+            char* email = cli_get_argument(cli_module, "email");
+            if (name) {
+                config_set_name(name);
+            }
+            if (email) {
+                config_set_email(email);
+            }
+            break;
+        }
+        case ADD: {
+            update_index(cli_get_argument(cli_module, "filepath"));
+            break;
+        }
+        default: {
+            fprintf(stderr, "ERROR: unknown command type");
+        }
+    }
     return 0;
 }

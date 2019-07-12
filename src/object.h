@@ -7,24 +7,14 @@
 #define MAX_PARENT_COUNT 10
 #define SHA_STRING_LENGTH (SHA_DIGEST_LENGTH * 2 + 1)
 
-enum object_type {
-    BLOB,
-    TREE,
-    COMMIT
-};
 
-enum get_blob_error_code {
-    READ_ERROR,
-    NOT_BLOB,
-    OK    
+enum obj_return_code {
+    OK,
+    CANT_GET_ROOT_FOLDER,
+    CANT_OPEN_FILE,
+    ALREADY_SAVED,
+    NOT_BLOB_FILE
 };
-
-typedef struct {
-    char *name;
-    char *mode;
-    char *sha;
-    enum object_type type; // can be BLOB or TREE
-} tree_entry_t;
 
 typedef struct {
     char tree_sha[20];
@@ -42,10 +32,18 @@ typedef struct {
 
 FILE* get_object_type(char sha[20], int do_not_close_file);
 
-enum get_blob_error_code get_blob_from_storage(char sha[SHA_STRING_LENGTH], string_t * data);
-void save_blob_to_storage(string_t * data, char sha[SHA_STRING_LENGTH]);
+char* object_path(char *sha);
+
+enum obj_return_code hash_object(char *path);
+
+enum obj_return_code get_blob_from_storage(char sha[SHA_STRING_LENGTH], string_t * data);
+enum obj_return_code save_blob_to_storage(string_t * data, char sha[SHA_STRING_LENGTH]);
 
 int cat_file(char *path);
+
+char* itoa(int numb);
+
+void dec_to_hex(unsigned char sha[SHA_DIGEST_LENGTH], char sha_result[SHA_STRING_LENGTH]);
 
 // void get_tree_from_storage(char sha[20], vector_tree_t * tree_object);
 // void set_tree_to_storage(vector_tree_t * tree_object, char sha[20]);
