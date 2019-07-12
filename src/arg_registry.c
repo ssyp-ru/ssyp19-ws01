@@ -46,4 +46,5 @@ void cli_register_command(cli_module_t *cli_module){
 
     register_command(cli_module, COMMIT, "commit", "help message");
     add_positional_argument(cli_module, COMMIT, "message", 1, "commit message");
+    register_command(cli_module, LOG, "log", "log shows all branches");
 }

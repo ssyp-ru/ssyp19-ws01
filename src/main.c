@@ -5,8 +5,12 @@
 #include "index.h"
 #include "commit-tree.h"
 #include "checkout.h"
-#include "config.h"
 #include "commit.h"
+#include "git_log.h"
+#include "checkout.h"
+#include "config.h"
+#include "help.h"
+
 
 int printim(diff_t **diffs, int num){
     for(int i = num - 1; i >= 0; i--){
@@ -20,7 +24,6 @@ int main(int argc, char *argv[]){
     cli_module_t *cli_module = cli_create();
     cli_register_command(cli_module);
     config_initialize();
-
     if (cli_parse(cli_module, argc, argv) == 0) {
         fprintf(stderr, "Argument parse error, abort.\n");
     }
@@ -31,6 +34,9 @@ int main(int argc, char *argv[]){
         }
         case COMMIT: {
             commit(cli_get_argument(cli_module, "message"));
+        }
+        case LOG: {
+            git_log(cli_module);
             break;
         }
         case UPDATE_INDEX: {
