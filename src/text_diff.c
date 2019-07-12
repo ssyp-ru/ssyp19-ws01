@@ -4,19 +4,21 @@
 #include <stdlib.h>
 #include <string.h>
 
-static int min(int first, int second, int third){
-    // Review: you can find min in 2 compare operation. You made it in 6.
-    if(first <= second && first <= third){
-        return first;
+
+static int min(int first, int second, int third){   
+    if(first <= second){
+        if(first <= third){
+            return first;
+        }else{
+            return third;
+        }
+    }else{
+        if(second <= third){
+            return second;
+        }else{
+            return third;
+        }
     }
-    if(second <= first && second <= third){
-        return second;
-    }
-    if(third <= second && third <= first){
-        return third;
-    }
-    // Review: WTF? Why min function can return 0?
-    return 0;
 }
 
 int diff_print(char **s1, char **s2, diff_t **diffs, int n){
@@ -36,7 +38,7 @@ int diff_print(char **s1, char **s2, diff_t **diffs, int n){
                 for(int k = diffs[i]->s1_from; k < diffs[i]->s1_from + diffs[i]->s1_len; k++){
                     printf("-%s\n", s1[k]);
                 }
-                for(int k = diffs[i]->s2_from; diffs[i]->s2_from + diffs[i]->s2_len; k++){
+                for(int k = diffs[i]->s2_from; k < diffs[i]->s2_from + diffs[i]->s2_len; k++){
                     printf("+%s\n", s2[k]);
                 }
                 break;
@@ -55,24 +57,27 @@ diff_t * create_diff(int from1, int len1, int from2, int len2, enum diff_types t
     return d;
 }
 
+
+
 static diff_t **way_back(int **buf, int len1, int len2, diff_t **res, int *length){
     int k = len1 - 1;
     int i = len2 - 1;
     int index = -1;
     int way = -1;
     while(buf[k][i] != 0){
-        if(k == 0){
+        if(i == 0){
             if(way == DELETE){
                res[index]->s1_len++;
                res[index]->s1_from--;
             }else{
                 index++;
+                res[index] = create_diff(k - 1, 1, i, 0, DELETE);
                 way = DELETE;
             }
-            i--;
+            k--;
             continue;
         }
-        if(i == 0){
+        if(k == 0){
             if(way == ADD){
                res[index]->s2_len++;
                res[index]->s2_from--;
@@ -81,30 +86,32 @@ static diff_t **way_back(int **buf, int len1, int len2, diff_t **res, int *lengt
                 res[index] = create_diff(k, 0, i - 1, 1, ADD);
                 way = ADD;
             }
-            k--;
+            i--;
             continue;
         }
         if( buf[k - 1][i] == min(buf[k - 1][i], buf[k][i - 1], buf[k - 1][i - 1])){
-            if(way == ADD){
-               res[index]->s2_len++;
-               res[index]->s2_from--;
-            }else{
-                index++;
-                res[index] = create_diff(k-1, 0, i-1, 1, ADD);
-                way = ADD;
-            }
-            k--;
-        }
-        if (buf[k][i - 1] == min(buf[k - 1][i], buf[k][i - 1], buf[k - 1][i - 1])){
             if(way == DELETE){
                res[index]->s1_len++;
                res[index]->s1_from--;
             }else{
                 index++;
-                res[index] = create_diff(i-1, 1, k-1, 0, DELETE);
+                res[index] = create_diff(i - 1, 1, k - 1, 0, DELETE);
                 way = DELETE;
             }
+            k--;
+            continue;
+        }
+        if (buf[k][i - 1] == min(buf[k - 1][i], buf[k][i - 1], buf[k - 1][i - 1])){
+            if(way == ADD){
+               res[index]->s2_len++;
+               res[index]->s2_from--;
+            }else{
+                index++;
+                res[index] = create_diff(k - 1, 0, i - 1, 1, ADD);
+                way = ADD;
+            }
             i--;
+            continue;
         }
         if( buf[k - 1][i - 1] == min(buf[k - 1][i], buf[k][i - 1], buf[k - 1][i - 1])){
             if(buf[k - 1][i - 1] == buf[k][i]){
@@ -118,11 +125,12 @@ static diff_t **way_back(int **buf, int len1, int len2, diff_t **res, int *lengt
                    res[index]->s1_from--;
                 }else{
                     index++;
-                    res[index] = create_diff(k-1, 1, i-1, 1, CHANGE);
+                    res[index] = create_diff(k - 1, 1, i - 1, 1, CHANGE);
                     way = CHANGE;
                 }
                 k--;
                 i--;
+                continue;
             }
         }
     }
