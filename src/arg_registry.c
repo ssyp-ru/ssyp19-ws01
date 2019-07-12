@@ -46,7 +46,8 @@ void cli_register_command(cli_module_t *cli_module){
     register_command(cli_module, INIT, "init", "initialize gg folder");
 
     register_command(cli_module, COMMIT, "commit", "help message");
-    add_positional_argument(cli_module, COMMIT, "message", 1, "commit message");
+    add_named_argument(cli_module, COMMIT, "message", "m", "commit message", 1);
+
     register_command(cli_module, LOG, "log", "log shows all branches");
 
 }

@@ -13,7 +13,8 @@ enum obj_return_code {
     CANT_GET_ROOT_FOLDER,
     CANT_OPEN_FILE,
     ALREADY_SAVED,
-    NOT_BLOB_FILE
+    NOT_BLOB_FILE,
+    WRONG_ARGUMENT
 };
 
 typedef struct {

@@ -33,6 +33,8 @@ int init(){
     fs_mkdir(buf);
     sub_init(buf, "/objects");
     sub_init(buf, "/refs");
+
+    printf("Initialized empty GG repository\n");
     
     return 1;
 }

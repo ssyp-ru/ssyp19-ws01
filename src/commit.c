@@ -7,6 +7,8 @@
 
 
 enum obj_return_code commit(char *message){
+    if (message == NULL)
+        return WRONG_ARGUMENT; 
     char tree_sha[SHA_STRING_LENGTH];
     if (write_tree(tree_sha) != OK){
         return CANT_OPEN_FILE;
@@ -18,19 +20,22 @@ enum obj_return_code commit(char *message){
     }
     strcat(head_path, "/refs/heads/");
     strcat(head_path, "branch");
-    char parent_sha[SHA_STRING_LENGTH];
+    char *parent_sha;
+    char parent_buf[SHA_STRING_LENGTH];
     FILE *f = fopen(head_path, "r");
     if (f == NULL){
         return CANT_OPEN_FILE;
     }
-    int len = fread(parent_sha, sizeof(char), SHA_STRING_LENGTH - 1, f);
+    int len = fread(parent_buf, sizeof(char), SHA_STRING_LENGTH - 1, f);
     fclose(f);
-    parent_sha[SHA_STRING_LENGTH - 1] = '\0';
+    parent_buf[SHA_STRING_LENGTH - 1] = '\0';
     if (len != SHA_STRING_LENGTH - 1){
-        *parent_sha = NULL;
+        parent_sha = NULL;
+    } else {
+        parent_sha = parent_buf;
     }
     char sha[SHA_STRING_LENGTH];
-    strcpy(sha, commit_tree_impl(tree_sha, parent_sha, message));
+    commit_tree_impl(tree_sha, parent_sha, message, sha);
     f = fopen(head_path, "w");
     if (f == NULL){
         fputs("CANT_OPEN_FILE", stderr);

@@ -26,6 +26,7 @@ int main(int argc, char *argv[]){
     config_initialize();
     if (cli_parse(cli_module, argc, argv) == 0) {
         fprintf(stderr, "Argument parse error, abort.\n");
+        return 1;
     }
     switch (cli_module->num_command){
         case COMMIT_TREE: {
@@ -34,6 +35,7 @@ int main(int argc, char *argv[]){
         }
         case COMMIT: {
             commit(cli_get_argument(cli_module, "message"));
+            break;
         }
         case LOG: {
             git_log(cli_module);

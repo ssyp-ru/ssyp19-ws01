@@ -5,6 +5,8 @@
 #include "object.h"
 #include <openssl/sha.h>
 #include "commit-tree.h"
+#include "config.h"
+#include <time.h>
 
 
 char *get_parent(char *sha, char *str_for_parent){
@@ -43,16 +45,42 @@ void commit_tree(cli_module_t * cli_module){
         fprintf(stderr, "Not enougth arguments\n");
         exit(1);
     }
-    commit_tree_impl(sha, parent, com_mes);
+    char new_sha[SHA_STRING_LENGTH];
+    commit_tree_impl(sha, parent, com_mes, new_sha);
 }
-char * commit_tree_impl(char tree_sha[SHA_STRING_LENGTH], char parent[SHA_STRING_LENGTH], char* message){
+
+void commit_tree_impl(char tree_sha[SHA_STRING_LENGTH], char parent[SHA_STRING_LENGTH], char* message, char* new_sha){
     char *sha = tree_sha;
     char *com_mes = message;
-    printf("sha %s, par %s, mes %s\n", sha, parent, com_mes);
+    //printf("sha %s, par %s, mes %s\n", sha, parent, com_mes);
     char pref_file[50] = "";
     char file_content[300] = "";
-    char new_sha[SHA_STRING_LENGTH];
+    
+    char* name = config_get_name();
+    if (name == NULL || name[0] == '\0') {
+        name = getenv("GIT_AUTHOR_NAME");
+        if (name == NULL) {
+            fprintf(stderr, "You should put your name in config. Abort commit operation.\n");
+            exit(1);
+        }
+    }
+    char* email = config_get_email();
+    if (email == NULL || email[0] == '\0') {
+        email = getenv("GIT_AUTHOR_EMAIL");
+        if (email == NULL) {
+            fprintf(stderr, "You should put your email in config. Abort commit operation.\n");
+            exit(1);
+        }
+    }
+    time_t rawtime;
+    struct tm * timeinfo;
+    time ( &rawtime );
+    timeinfo = localtime ( &rawtime );
+    char* cur_time = asctime(timeinfo);
+    int time_len = strlen(cur_time);
+    cur_time[time_len-1] = 0; // delete '\n'
 
+    // Not really effective =/
     strcat(file_content, "tree ");
     strcat(file_content, sha);
     strcat(file_content, "\n");
@@ -62,19 +90,19 @@ char * commit_tree_impl(char tree_sha[SHA_STRING_LENGTH], char parent[SHA_STRING
         strcat(file_content, "\n");
     }
     strcat(file_content, "author ");
-    strcat(file_content, get_env_or_default("GIT_AUTHOR_NAME", "A_NAME"));
+    strcat(file_content, name);
     strcat(file_content, " ");
-    strcat(file_content, get_env_or_default("GIT_AUTHOR_EMAIL", "A_EMAIL"));
+    strcat(file_content, email);
     strcat(file_content, " ");
-    strcat(file_content, get_env_or_default("GIT_AUTHOR_DATE", "A_DATE"));
+    strcat(file_content, get_env_or_default("GIT_AUTHOR_DATE", cur_time));
     strcat(file_content, "\n");
     
     strcat(file_content, "commiter ");
-    strcat(file_content, get_env_or_default("GIT_COMMITER_NAME", "C_NAME"));
+    strcat(file_content, name);
     strcat(file_content, " ");
-    strcat(file_content, get_env_or_default("GIT_COMMITER_EMAIL", "C_EMAIL"));
+    strcat(file_content, email);
     strcat(file_content, " ");
-    strcat(file_content, get_env_or_default("GIT_COMMITER_DATE", "C_DATE"));
+    strcat(file_content, get_env_or_default("GIT_COMMITER_DATE", cur_time));
     strcat(file_content, "\n");
     strcat(file_content, "\n");
     strcat(file_content, com_mes);
@@ -101,7 +129,5 @@ char * commit_tree_impl(char tree_sha[SHA_STRING_LENGTH], char parent[SHA_STRING
     FILE *f = fopen(path, "w");
     fwrite(pref_file, sizeof(char), len_pref + len_content, f);
     fclose(f);
-    return new_sha;
-
 }
 

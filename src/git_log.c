@@ -18,9 +18,9 @@ void git_log(cli_module_t *cli_module){
     while(strcmp(parent, "") != 0){
         strcpy(path, object_path(parent));
         fs_read_to_string(path, content);
-        strcpy(parent, get_parent(parent, parent));
         while(content[i++] != '\0');
-        printf("%s\n\n", &content[i]);
+        printf("commit %s\n%s\n--------------------------\n", parent, &content[i]);
+        strcpy(parent, get_parent(parent, parent));
         i = 0;
     }
 }

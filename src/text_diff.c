@@ -263,20 +263,24 @@ diff_t **file_diff(const char *path1, const char *path2, int *num_of_diffs){
 }
 
 void diff(){
+    FILE *index = fopen(get_index_path(), "r");
+    if (index == NULL) {
+        return;
+    }
     int num_of_diffs = 0;
-    string_t *buf = (string_t * )malloc(sizeof(string_t));
+    string_t buf;
+    ssyp_string_initialize(&buf, 0);
     char ** string1 = allocate_string_matrix(BUF_SIZE);
     char ** string2 = allocate_string_matrix(BUF_SIZE);
     char indexStr[MAX_PATH_LENGTH + SHA_STRING_LENGTH + 1]; //aeeeeee nice constants
-    FILE *index = fopen(get_index_path(), "r");
     char buf_char[BUF_SIZE];
     while(fgets(indexStr, MAX_PATH_LENGTH + SHA_STRING_LENGTH + 1, index) != NULL){
         printf("========================================================\n");
         int len1 = 1;
         int len2 = 1;
         indexStr[SHA_STRING_LENGTH - 1] = 0;
-        get_blob_from_storage(indexStr, buf);
-        strncpy(buf_char, buf->array, buf->size);
+        get_blob_from_storage(indexStr, &buf);
+        strncpy(buf_char, buf.array, buf.size);
         split_file_content(&indexStr[SHA_STRING_LENGTH], string1, &len1);
         split_content(buf_char, string2, &len2);
         diff_t ** d = diff_find(string1, len1, string2, len2, &num_of_diffs);
