@@ -70,7 +70,7 @@ static diff_t **way_back(int **buf, int len1, int len2, diff_t **res, int *lengt
     int i = len2 - 1;
     int index = -1;
     int way = -1;
-    while(buf[k][i] != 0){
+    while(i != 0 && k != 0){
         if(i == 0){
             if(way == DELETE){
                res[index]->s1_len++;
@@ -278,13 +278,15 @@ void diff(){
         printf("========================================================\n");
         int len1 = 1;
         int len2 = 1;
-        indexStr[SHA_STRING_LENGTH - 1] = 0;
-        get_blob_from_storage(indexStr, &buf);
+        char sha[SHA_STRING_LENGTH];
+        char file_path[MAX_PATH_LENGTH];
+        sscanf(indexStr, "%s%s", sha, file_path);
+        get_blob_from_storage(sha, &buf);
         strncpy(buf_char, buf.array, buf.size);
-        split_file_content(&indexStr[SHA_STRING_LENGTH], string1, &len1);
+        split_file_content(file_path, string1, &len1);
         split_content(buf_char, string2, &len2);
-        diff_t ** d = diff_find(string1, len1, string2, len2, &num_of_diffs);
-        diff_print(string1, string2, d, num_of_diffs);
+        diff_t ** d = diff_find(string2, len2, string1, len1, &num_of_diffs);
+        diff_print(string2, string1, d, num_of_diffs);
     }
 
 }
