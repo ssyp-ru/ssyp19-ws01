@@ -1,4 +1,4 @@
-# 1 fs helpers
+# 1 (done) fs helpers
 Написать модуль с хелперами для файловых операций. Необходимый (возможно не достаточный) список:
 ```c
 int copy(const char* from, const char* to);
@@ -10,7 +10,7 @@ int is_directory(const char* path);
 void get_gg_root_dir_path(char buffer[MAX_PATH_LENGHT]);
 ```
 
-# 2 CLI module
+# 2 (done) CLI module
 Написать модуль CLI. Должно это выглядеть примерно так (с клиентской стороны):
 ```c
 enum Commands {
@@ -38,7 +38,7 @@ switch (cli_module->command_type) {
 }
 
 ```
-# 2.1
+# (done) 2.1
 Сделать вывод --help
 
 # (Done) 3 integration test module
@@ -70,7 +70,7 @@ ini_set_value(section_name, var_name, value);
 # 5 gitignore
 нужно сделать функцию, которая принимает путь и возвращает 1 если он соответствует gitignore
 
-# 6 rev-parse, rev-update
+# 6 (done) rev-parse, rev-update
 функции, которые возвращают и записывают rev
 
 #6.1 rev-list
@@ -79,14 +79,14 @@ ini_set_value(section_name, var_name, value);
 
 # 7 filelock
 
-# 8 hash-object, sha lib interration, cat-file
+# 8 (done) hash-object, sha lib interration, cat-file
 флаги для:
 hash-object: -w --stdin, [filename]
 cat-file: -p -t
 
-# 9 update-index, ls-files, write-tree
+# 9 (done) update-index, ls-files, write-tree
 
-# 10 commit-tree
+# 10 (done) commit-tree
 переменные окружения, которые задаются для коммита
 ```
 GIT_AUTHOR_NAME
@@ -97,14 +97,14 @@ GIT_COMMITER_EMAIL
 GIT_COMMITER_DATE
 ```
 
-# 11 read env vars
+# 11 (close) read env vars
 нужно уметь читать переменные окружения (через отдельный модуль?)
 
-# 12 add, commit
+# 12 (done) add, commit
 
-# 13 simple log
+# 13 (done) simple log
 
-# 14 text diff
+# 14 (done) text diff
 
 # 15 commit diff
 
@@ -120,9 +120,9 @@ GIT_COMMITER_DATE
 
 # 21 commit --amend
 
-# 22 config
+# 22 (done) config
 
-# (Done) 23 string_t
+# 23 (done) string_t
 
 основные str функции + 
 
@@ -133,14 +133,14 @@ void write_str_to_file(string_t * s, const char* path);
 
 # 24 make patch, apply patch
 
-# 25 sha1 helper function
+# 25 (done) sha1 helper function
 ```c
 void calc_sha_str(char hash[SHA_LENGHT], const char* data, int len);
 void calc_sha_file(char hash[SHA_LENGHT], const char* path_to_file);
 ```
 
-# 26 gg init
+# 26 (done) gg init
 If not exists, create .gg and .gg/objects folders
 
-# 27 git checkout
+# 27 (done) git checkout
 Нужно уметь читать tree object во внутреннюю структуру, искать соответствующие блобы и записывать их в файловую систему
